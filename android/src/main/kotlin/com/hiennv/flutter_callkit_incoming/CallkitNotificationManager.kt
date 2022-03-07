@@ -65,10 +65,20 @@ class CallkitNotificationManager(private val context: Context) {
         override fun onPrepareLoad(placeHolderDrawable: Drawable?) {}
     }
 
-
+    private fun wakeUpScreen() {
+        val pm: PowerManager = this.getSystemService(Context.POWER_SERVICE) as PowerManager
+        val isScreenOn: Boolean = pm.isScreenOn()
+        Log.e("screen on......", "" + isScreenOn)
+        if (isScreenOn == false) {
+            val wl: PowerManager.WakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK or PowerManager.ACQUIRE_CAUSES_WAKEUP or PowerManager.ON_AFTER_RELEASE, "MyLock")
+            wl.acquire(10000)
+            val wl_cpu: PowerManager.WakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "MyCpuLock")
+            wl_cpu.acquire(10000)
+        }
+    }
     fun showIncomingNotification(data: Bundle) {
         data.putLong(EXTRA_TIME_START_CALL, System.currentTimeMillis())
-
+        wakeUpScreen()
         notificationId = data.getString(EXTRA_CALLKIT_ID, "callkit_incoming").hashCode()
         createNotificationChanel()
 
