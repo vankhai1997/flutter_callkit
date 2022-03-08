@@ -12,8 +12,10 @@ import android.graphics.drawable.Drawable
 import android.media.RingtoneManager
 import android.net.Uri
 import android.os.*
+import android.util.Log
 import android.view.View
 import android.widget.RemoteViews
+import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.hiennv.flutter_callkit_incoming.CallkitIncomingBroadcastReceiver.Companion.EXTRA_CALLKIT_ACTION_COLOR
@@ -294,6 +296,7 @@ class CallkitNotificationManager(private val context: Context) {
 
     private fun getAcceptPendingIntent(id: Int, data: Bundle): PendingIntent {
         val acceptIntent = CallkitIncomingBroadcastReceiver.getIntentAccept(context, data)
+        Log.e("----------getAccept", data.toString())
         return PendingIntent.getBroadcast(
                 context,
                 id,

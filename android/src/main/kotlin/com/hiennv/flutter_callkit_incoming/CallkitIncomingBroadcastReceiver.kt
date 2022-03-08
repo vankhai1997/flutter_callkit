@@ -4,6 +4,8 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
+import android.widget.Toast.makeText
 
 class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
 
@@ -97,6 +99,7 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
         when (action) {
             ACTION_CALL_INCOMING -> {
                 try {
+                    makeText(context,data.toString(),Toast.LENGTH_LONG)
                     sendEventFlutter(ACTION_CALL_INCOMING, data)
                     val soundPlayerServiceIntent = Intent(context, CallkitSoundPlayerService::class.java)
                     soundPlayerServiceIntent.putExtras(data)
@@ -116,6 +119,8 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
             ACTION_CALL_ACCEPT -> {
                 try {
                     Utils.backToForeground(context)
+                    makeText(context,data.toString(),Toast.LENGTH_LONG)
+
                     sendEventFlutter(ACTION_CALL_ACCEPT, data)
                     context.stopService(Intent(context, CallkitSoundPlayerService::class.java))
                     callkitNotificationManager.clearIncomingNotification(data)
