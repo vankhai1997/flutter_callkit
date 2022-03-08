@@ -258,8 +258,7 @@ class CallkitIncomingActivity : Activity() {
     }
 
     override fun onNewIntent(intent: Intent?) {
-        if (intent != null)
-            Toast.makeText(this, intent.data.toString(), Toast.LENGTH_LONG)
+        onAcceptClick();
         super.onNewIntent(intent)
     }
 
