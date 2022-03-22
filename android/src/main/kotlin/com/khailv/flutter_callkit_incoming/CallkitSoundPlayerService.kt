@@ -65,7 +65,7 @@ class CallkitSoundPlayerService : Service() {
         )
         val duration = this.data?.getLong(
             CallkitIncomingBroadcastReceiver.EXTRA_CALLKIT_DURATION,
-            30000L
+            60000L
         )
         var uri = sound?.let { getRingtoneUri(it) }
         if(uri == null){

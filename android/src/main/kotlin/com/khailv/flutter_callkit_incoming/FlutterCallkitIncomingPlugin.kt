@@ -36,9 +36,8 @@ class FlutterCallkitIncomingPlugin : FlutterPlugin, MethodCallHandler, ActivityA
 
         private val eventHandler = EventCallbackHandler()
 
-        fun sendEvent(event: String, body: Map<String, Any>) {
-            Log.e("----------sendEvent", body.toString())
-            eventHandler.send(event, body)
+        fun sendEvent(event: String, body: Map<String, Any>,context: Context) {
+            eventHandler.send(event, body,context)
         }
 
         private fun sharePluginWithRegister(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding, @Nullable handler: MethodCallHandler) {
@@ -74,6 +73,8 @@ class FlutterCallkitIncomingPlugin : FlutterPlugin, MethodCallHandler, ActivityA
         channel?.setMethodCallHandler(this)
         events =
                 EventChannel(flutterPluginBinding.binaryMessenger, "flutter_callkit_incoming_events")
+//        Toast.makeText(context, "onAttachedToEngine", Toast.LENGTH_LONG).show();
+
         events?.setStreamHandler(eventHandler)
         //       sharePluginWithRegister(flutterPluginBinding, this)
     }
@@ -212,13 +213,13 @@ class FlutterCallkitIncomingPlugin : FlutterPlugin, MethodCallHandler, ActivityA
             eventSink = sink
         }
 
-        fun send(event: String, body: Map<String, Any>) {
+        fun send(event: String, body: Map<String, Any>,context: Context) {
             val data = mapOf(
                     "event" to event,
                     "body" to body
             )
-            print("==========$data")
             Handler(Looper.getMainLooper()).post {
+//                Toast.makeText(context,"sendddddddddddddddddđ $body", Toast.LENGTH_LONG).show();
                 eventSink?.success(data)
             }
         }

@@ -2,10 +2,11 @@ package com.hiennv.flutter_callkit_incoming
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.widget.Toast
 import com.google.gson.reflect.TypeToken
 
 
-private const val CALLKIT_PREFERENCES_FILE_NAME = "flutter_callkit_incoming"
+private const val CALLKIT_PREFERENCES_FILE_NAME = "meeyteam_callkit_incoming"
 private var prefs: SharedPreferences? = null
 private var editor: SharedPreferences.Editor? = null
 

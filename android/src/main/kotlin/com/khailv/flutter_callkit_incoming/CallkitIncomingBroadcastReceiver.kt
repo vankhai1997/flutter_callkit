@@ -1,5 +1,6 @@
 package com.hiennv.flutter_callkit_incoming
 
+import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -91,16 +92,17 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
 
 
 
+    @SuppressLint("ShowToast")
     override fun onReceive(context: Context, intent: Intent) {
         //val callkitSoundPlayer = CallkitSoundPlayer.getInstance(context.applicationContext)
+
         val callkitNotificationManager = CallkitNotificationManager(context)
         val action = intent.action ?: return
         val data = intent.extras?.getBundle(EXTRA_CALLKIT_INCOMING_DATA) ?: return
         when (action) {
             ACTION_CALL_INCOMING -> {
                 try {
-                    makeText(context,data.toString(),Toast.LENGTH_LONG)
-                    sendEventFlutter(ACTION_CALL_INCOMING, data)
+                    sendEventFlutter(ACTION_CALL_INCOMING, data,context)
                     val soundPlayerServiceIntent = Intent(context, CallkitSoundPlayerService::class.java)
                     soundPlayerServiceIntent.putExtras(data)
                     context.startService(soundPlayerServiceIntent)
@@ -110,7 +112,7 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
             }
             ACTION_CALL_START -> {
                 try {
-                    sendEventFlutter(ACTION_CALL_START, data)
+                    sendEventFlutter(ACTION_CALL_START, data,context)
                     addCall(context, Data.fromBundle(data))
                 } catch (error: Exception) {
                     error.printStackTrace()
@@ -118,20 +120,19 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
             }
             ACTION_CALL_ACCEPT -> {
                 try {
+                    addCall(context, Data.fromBundle(data))
                     Utils.backToForeground(context)
-                    makeText(context,data.toString(),Toast.LENGTH_LONG)
-
-                    sendEventFlutter(ACTION_CALL_ACCEPT, data)
+                    sendEventFlutter(ACTION_CALL_ACCEPT, data,context)
                     context.stopService(Intent(context, CallkitSoundPlayerService::class.java))
                     callkitNotificationManager.clearIncomingNotification(data)
-                    addCall(context, Data.fromBundle(data))
+
                 } catch (error: Exception) {
                     error.printStackTrace()
                 }
             }
             ACTION_CALL_DECLINE -> {
                 try {
-                    sendEventFlutter(ACTION_CALL_DECLINE, data)
+                    sendEventFlutter(ACTION_CALL_DECLINE, data,context)
                     context.stopService(Intent(context, CallkitSoundPlayerService::class.java))
                     callkitNotificationManager.clearIncomingNotification(data)
                     removeCall(context, Data.fromBundle(data))
@@ -141,7 +142,7 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
             }
             ACTION_CALL_ENDED -> {
                 try {
-                    sendEventFlutter(ACTION_CALL_ENDED, data)
+                    sendEventFlutter(ACTION_CALL_ENDED, data,context)
                     context.stopService(Intent(context, CallkitSoundPlayerService::class.java))
                     callkitNotificationManager.clearIncomingNotification(data)
                     removeCall(context, Data.fromBundle(data))
@@ -151,7 +152,7 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
             }
             ACTION_CALL_TIMEOUT -> {
                 try {
-                    sendEventFlutter(ACTION_CALL_TIMEOUT, data)
+                    sendEventFlutter(ACTION_CALL_TIMEOUT, data,context)
                     context.stopService(Intent(context, CallkitSoundPlayerService::class.java))
                     callkitNotificationManager.showMissCallNotification(data)
                     removeCall(context, Data.fromBundle(data))
@@ -162,7 +163,7 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
             ACTION_CALL_CALLBACK -> {
                 try {
                     callkitNotificationManager.clearMissCallNotification(data)
-                    sendEventFlutter(ACTION_CALL_CALLBACK, data)
+                    sendEventFlutter(ACTION_CALL_CALLBACK, data,context)
                     Utils.backToForeground(context)
                     val closeNotificationPanel = Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS)
                     context.sendBroadcast(closeNotificationPanel)
@@ -174,7 +175,7 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
     }
 
     @Suppress("UNCHECKED_CAST")
-    private fun sendEventFlutter(event: String, data: Bundle) {
+    private fun sendEventFlutter(event: String, data: Bundle,context: Context) {
         val android = mapOf(
             "isCustomNotification" to data.getBoolean(EXTRA_CALLKIT_IS_CUSTOM_NOTIFICATION, false),
             "ringtonePath" to data.getString(EXTRA_CALLKIT_RINGTONE_PATH, ""),
@@ -192,6 +193,6 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
             "extra" to data.getSerializable(EXTRA_CALLKIT_EXTRA) as HashMap<String, Any?>,
             "android" to android
         )
-        FlutterCallkitIncomingPlugin.sendEvent(event, forwardData)
+            FlutterCallkitIncomingPlugin.sendEvent(event, forwardData,context)
     }
 }

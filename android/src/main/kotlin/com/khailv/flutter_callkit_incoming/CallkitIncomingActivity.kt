@@ -41,11 +41,12 @@ import com.squareup.picasso.OkHttp3Downloader
 import android.view.ViewGroup.MarginLayoutParams
 import android.os.PowerManager
 import android.os.PowerManager.WakeLock
+import android.util.Log
 import android.widget.Toast
+import kotlin.math.log
 
 
 class CallkitIncomingActivity : Activity() {
-
     companion object {
 
         const val ACTION_ENDED_CALL_INCOMING =
@@ -244,10 +245,10 @@ class CallkitIncomingActivity : Activity() {
         animateAcceptCall()
 
         ivAcceptCall.setOnClickListener {
-            onAcceptClick()
+                onAcceptClick()
         }
         ivDeclineCall.setOnClickListener {
-            onDeclineClick()
+              onDeclineClick()
         }
     }
 
