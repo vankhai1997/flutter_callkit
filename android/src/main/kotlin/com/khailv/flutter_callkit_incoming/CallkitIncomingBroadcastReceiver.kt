@@ -156,7 +156,7 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
                 try {
                     sendEventFlutter(ACTION_CALL_TIMEOUT, data, context)
                     context.stopService(Intent(context, CallkitSoundPlayerService::class.java))
-                    callkitNotificationManager.showMissCallNotification(data)
+//                    callkitNotificationManager.showMissCallNotification(data)
                     removeCall(context, Data.fromBundle(data))
                     SocketIoManager.instance.disConnect()
                 } catch (error: Exception) {
