@@ -1,4 +1,4 @@
-package com.hiennv.flutter_callkit_incoming
+package com.khailv.flutter_callkit_incoming
 
 import android.os.Bundle
 
@@ -14,7 +14,7 @@ data class Data(val args: Map<String, Any?>) {
     var handle: String = (args["handle"] as? String) ?: ""
     var avatar: String = (args["avatar"] as? String) ?: ""
     var type: Int = (args["type"] as? Int) ?: 0
-    var duration: Long = (args["duration"] as? Long) ?: 30000L
+    var duration: Long = (args["duration"] as? Long) ?: 60000L
     var extra: HashMap<String, Any?> =
         (args["extra"] ?: HashMap<String, Any?>()) as HashMap<String, Any?>
     var headers: HashMap<String, Any?> =

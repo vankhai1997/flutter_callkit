@@ -1,11 +1,10 @@
-package com.hiennv.flutter_callkit_incoming
+package com.khailv.flutter_callkit_incoming
 
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.widget.Toast
 import androidx.annotation.NonNull
 import androidx.annotation.Nullable
@@ -122,11 +121,20 @@ class FlutterCallkitIncomingPlugin : FlutterPlugin, MethodCallHandler, ActivityA
         removeAllCalls(context)
     }
 
+    private fun initSocket(context: Context?) {
+        if (SocketIoManager.instance.socket == null) {
+            context?.let {
+                SocketIoManager.instance.connect(it)
+            }
+        }
+
+    }
 
     override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
         try {
             when (call.method) {
                 "showCallkitIncoming" -> {
+                    initSocket(context)
                     val data = Data(call.arguments())
                     data.from = "notification"
                     callkitNotificationManager?.showIncomingNotification(data.toBundle())

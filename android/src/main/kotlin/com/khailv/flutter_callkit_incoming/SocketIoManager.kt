@@ -1,10 +1,12 @@
-package com.meeyland
+package com.khailv.flutter_callkit_incoming
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
+import android.provider.Settings
 import com.google.firebase.messaging.FirebaseMessagingService
-import com.meeyland.utis.Const
-import com.meeyland.utis.PreKey
+import com.khailv.flutter_callkit_incoming.utis.Const
+import com.khailv.flutter_callkit_incoming.utis.PreKey
 import io.socket.client.IO
 import io.socket.client.Socket
 import io.socket.engineio.client.transports.WebSocket
@@ -16,7 +18,7 @@ class SocketIoManager {
         val instance = SocketIoManager()
     }
 
-    private var socket: Socket? = null
+    var socket: Socket? = null
     var token: String? = null
 
     fun connect(context: Context) {
@@ -36,14 +38,23 @@ class SocketIoManager {
         }
     }
 
+
     fun disConnect() {
         socket?.disconnect()
         socket = null
     }
 
-    fun emitCancel(roomId: String) {
+    @SuppressLint("HardwareIds")
+    fun emitCancel(roomId: String,receiverId: String, context: Context) {
         val json = JSONObject()
+        val deviceId = Settings.Secure.getString(
+            context.contentResolver,
+            Settings.Secure.ANDROID_ID
+        );
         json.put("roomId", roomId)
+        json.put("receiverId", receiverId)
+        json.put("deviceId", deviceId)
         socket?.emit(Const.REJECT_CALL, json)
+        disConnect()
     }
 }

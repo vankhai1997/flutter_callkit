@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 /// Instance to use library functions.
@@ -32,7 +33,7 @@ class FlutterCallkitIncoming {
   /// CallEvent.DID_UPDATE_DEVICE_PUSH_TOKEN_VOIP - only iOS
   /// }
   static Stream<CallEvent?> get onEvent =>
-      _eventChannel.receiveBroadcastStream().map(_receiveCallEvent);
+      _eventChannel.receiveBroadcastStream().distinct().map(_receiveCallEvent);
 
   /// Show Callkit Incoming.
   /// On iOS, using Callkit. On Android, using a custom UI.
@@ -74,6 +75,7 @@ class FlutterCallkitIncoming {
   }
 
   static CallEvent? _receiveCallEvent(dynamic data) {
+
     var event = "";
     dynamic body = {};
     if (data is Map) {
@@ -86,32 +88,32 @@ class FlutterCallkitIncoming {
 
 class CallEvent {
   static const String ACTION_DID_UPDATE_DEVICE_PUSH_TOKEN_VOIP =
-      "com.hiennv.flutter_callkit_incoming.DID_UPDATE_DEVICE_PUSH_TOKEN_VOIP";
+      "com.khailv.flutter_callkit_incoming.DID_UPDATE_DEVICE_PUSH_TOKEN_VOIP";
 
   static const String ACTION_CALL_INCOMING =
-      "com.hiennv.flutter_callkit_incoming.ACTION_CALL_INCOMING";
+      "com.khailv.flutter_callkit_incoming.ACTION_CALL_INCOMING";
   static const String ACTION_CALL_START =
-      "com.hiennv.flutter_callkit_incoming.ACTION_CALL_START";
+      "com.khailv.flutter_callkit_incoming.ACTION_CALL_START";
   static const String ACTION_CALL_ACCEPT =
-      "com.hiennv.flutter_callkit_incoming.ACTION_CALL_ACCEPT";
+      "com.khailv.flutter_callkit_incoming.ACTION_CALL_ACCEPT";
   static const String ACTION_CALL_DECLINE =
-      "com.hiennv.flutter_callkit_incoming.ACTION_CALL_DECLINE";
+      "com.khailv.flutter_callkit_incoming.ACTION_CALL_DECLINE";
   static const String ACTION_CALL_ENDED =
-      "com.hiennv.flutter_callkit_incoming.ACTION_CALL_ENDED";
+      "com.khailv.flutter_callkit_incoming.ACTION_CALL_ENDED";
   static const String ACTION_CALL_TIMEOUT =
-      "com.hiennv.flutter_callkit_incoming.ACTION_CALL_TIMEOUT";
+      "com.khailv.flutter_callkit_incoming.ACTION_CALL_TIMEOUT";
   static const String ACTION_CALL_CALLBACK =
-      "com.hiennv.flutter_callkit_incoming.ACTION_CALL_CALLBACK";
+      "com.khailv.flutter_callkit_incoming.ACTION_CALL_CALLBACK";
   static const String ACTION_CALL_TOGGLE_HOLD =
-      "com.hiennv.flutter_callkit_incoming.ACTION_CALL_TOGGLE_HOLD";
+      "com.khailv.flutter_callkit_incoming.ACTION_CALL_TOGGLE_HOLD";
   static const String ACTION_CALL_TOGGLE_MUTE =
-      "com.hiennv.flutter_callkit_incoming.ACTION_CALL_TOGGLE_MUTE";
+      "com.khailv.flutter_callkit_incoming.ACTION_CALL_TOGGLE_MUTE";
   static const String ACTION_CALL_TOGGLE_DMTF =
-      "com.hiennv.flutter_callkit_incoming.ACTION_CALL_TOGGLE_DMTF";
+      "com.khailv.flutter_callkit_incoming.ACTION_CALL_TOGGLE_DMTF";
   static const String ACTION_CALL_TOGGLE_GROUP =
-      "com.hiennv.flutter_callkit_incoming.ACTION_CALL_TOGGLE_GROUP";
+      "com.khailv.flutter_callkit_incoming.ACTION_CALL_TOGGLE_GROUP";
   static const String ACTION_CALL_TOGGLE_AUDIO_SESSION =
-      "com.hiennv.flutter_callkit_incoming.ACTION_CALL_TOGGLE_AUDIO_SESSION";
+      "com.khailv.flutter_callkit_incoming.ACTION_CALL_TOGGLE_AUDIO_SESSION";
 
   late String name;
   late dynamic body;

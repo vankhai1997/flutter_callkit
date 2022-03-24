@@ -9,7 +9,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -26,7 +25,7 @@ flutter:
   plugin:
     platforms:
       android:
-        package: com.hiennv.flutter_callkit_incoming
+        package: com.khailv.flutter_callkit_incoming
         pluginClass: FlutterCallkitIncomingPlugin
       ios:
         pluginClass: FlutterCallkitIncomingPlugin

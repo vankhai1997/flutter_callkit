@@ -1,8 +1,7 @@
-package com.hiennv.flutter_callkit_incoming
+package com.khailv.flutter_callkit_incoming
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.widget.Toast
 import com.google.gson.reflect.TypeToken
 
 
