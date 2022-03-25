@@ -136,6 +136,8 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
                     SocketIoManager.instance.emitCancel(
                         Data.fromBundle(data).extra["roomId"].toString(),
                         Data.fromBundle(data).extra["receiverId"].toString(),
+                        Data.fromBundle(data).extra["senderId"].toString(),
+                        Data.fromBundle(data).extra["senderDeviceId"].toString(),
                         context
                     )
                 } catch (error: Exception) {

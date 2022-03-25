@@ -45,13 +45,15 @@ class SocketIoManager {
     }
 
     @SuppressLint("HardwareIds")
-    fun emitCancel(roomId: String,receiverId: String, context: Context) {
+    fun emitCancel(roomId: String,receiverId: String,senderId: String,senderDeviceId: String, context: Context) {
         val json = JSONObject()
         val deviceId = Settings.Secure.getString(
             context.contentResolver,
             Settings.Secure.ANDROID_ID
         );
         json.put("roomId", roomId)
+        json.put("senderId", senderId)
+        json.put("senderDeviceId", senderDeviceId)
         json.put("receiverId", receiverId)
         json.put("deviceId", deviceId)
         socket?.emit(Const.REJECT_CALL, json)
