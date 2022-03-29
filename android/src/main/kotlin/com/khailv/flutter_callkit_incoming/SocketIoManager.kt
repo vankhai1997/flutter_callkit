@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.provider.Settings
+import android.widget.Toast
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.khailv.flutter_callkit_incoming.utis.Const
 import com.khailv.flutter_callkit_incoming.utis.PreKey
@@ -45,7 +46,14 @@ class SocketIoManager {
     }
 
     @SuppressLint("HardwareIds")
-    fun emitCancel(roomId: String,receiverId: String,senderId: String,senderDeviceId: String, context: Context) {
+    fun emitCancel(
+        roomId: String,
+        receiverId: String,
+        senderId: String,
+        senderDeviceId: String,
+        context: Context
+    ) {
+
         val json = JSONObject()
         val deviceId = Settings.Secure.getString(
             context.contentResolver,
