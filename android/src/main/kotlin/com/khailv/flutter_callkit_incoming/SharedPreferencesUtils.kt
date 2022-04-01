@@ -16,39 +16,26 @@ private fun initInstance(context: Context) {
 
 
 fun addCall(context: Context?, data: Data) {
-    val json = getString(context, "ACTIVE_CALLS", "[]")
-    val arrayData: ArrayList<Data> = Utils.getGsonInstance()
-        .fromJson(json, object : TypeToken<ArrayList<Data>>() {}.type)
-    arrayData.add(data)
-    putString(context, "ACTIVE_CALLS", Utils.getGsonInstance().toJson(arrayData))
+//    val json = getString(context, "ACTIVE_CALLS", "[]")
+//    val arrayData: ArrayList<Data> = Utils.getGsonInstance()
+//        .fromJson(json, object : TypeToken<ArrayList<Data>>() {}.type)
+//    arrayData.add(data)
+    putString(context, "ACTIVE_CALLS", Utils.getGsonInstance().toJson(data))
 }
 
 fun removeCall(context: Context?, data: Data) {
-    val json = getString(context, "ACTIVE_CALLS", "[]")
+    val json = getString(context, "ACTIVE_CALLS", "0")
     val arrayData: ArrayList<Data> = Utils.getGsonInstance()
         .fromJson(json, object : TypeToken<ArrayList<Data>>() {}.type)
     arrayData.remove(data)
-    putString(context, "ACTIVE_CALLS", Utils.getGsonInstance().toJson(arrayData))
+//    putString(context, "ACTIVE_CALLS", Utils.getGsonInstance().toJson(arrayData))
+    putString(context, "ACTIVE_CALLS", "")
 }
 
 fun removeAllCalls(context: Context?) {
-    putString(context, "ACTIVE_CALLS", "[]")
+    putString(context, "ACTIVE_CALLS", "")
     remove(context, "ACTIVE_CALLS")
 }
-
-fun getActiveCalls(context: Context?): String {
-    val json = getString(context, "ACTIVE_CALLS", "[]")
-    val arrayData: ArrayList<Data> = Utils.getGsonInstance()
-        .fromJson(json, object : TypeToken<ArrayList<Data>>() {}.type)
-    return Utils.getGsonInstance().toJson(arrayData)
-}
-
-fun getDataActiveCalls(context: Context?): ArrayList<Data> {
-    val json = getString(context, "ACTIVE_CALLS", "[]")
-    return Utils.getGsonInstance()
-        .fromJson(json, object : TypeToken<ArrayList<Data>>() {}.type)
-}
-
 
 fun putString(context: Context?, key: String, value: String?) {
     if (context == null) return

@@ -1,8 +1,8 @@
 package com.khailv.flutter_callkit_incoming.utis
 
 object Const {
-    const val SOCKET_URL = "http://192.168.4.22:8082/"
-//    const  val SOCKET_URL = "http://192.168.4.49:8082/"
+        const val SOCKET_URL = "http://192.168.4.22:8082/"
+//    const val SOCKET_URL = "http://192.168.4.49:8082/"
 
     const val REJECT_CALL = "rejectCall"
     const val receivedToOtherDevice = "receivedToOtherDevice"
