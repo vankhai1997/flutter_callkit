@@ -35,28 +35,20 @@ class FlutterCallkitIncomingPlugin : FlutterPlugin, MethodCallHandler, ActivityA
 
         private val eventHandler = EventCallbackHandler()
 
-        fun sendEvent(event: String, body: Map<String, Any>, context: Context) {
-            eventHandler.send(event, body, context)
+        fun sendEvent(event: String, body: Map<String, Any>,context: Context) {
+            eventHandler.send(event, body,context)
         }
 
-        private fun sharePluginWithRegister(
-            @NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding,
-            @Nullable handler: MethodCallHandler
-        ) {
+        private fun sharePluginWithRegister(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding, @Nullable handler: MethodCallHandler) {
             if (instance == null) {
                 instance = FlutterCallkitIncomingPlugin()
             }
             instance!!.context = flutterPluginBinding.applicationContext
-            instance!!.callkitNotificationManager =
-                CallkitNotificationManager(flutterPluginBinding.applicationContext)
-            instance!!.channel =
-                MethodChannel(flutterPluginBinding.binaryMessenger, "flutter_callkit_incoming")
+            instance!!.callkitNotificationManager = CallkitNotificationManager(flutterPluginBinding.applicationContext)
+            instance!!.channel = MethodChannel(flutterPluginBinding.binaryMessenger, "flutter_callkit_incoming")
             instance!!.channel?.setMethodCallHandler(handler)
             instance!!.events =
-                EventChannel(
-                    flutterPluginBinding.binaryMessenger,
-                    "flutter_callkit_incoming_events"
-                )
+                EventChannel(flutterPluginBinding.binaryMessenger, "flutter_callkit_incoming_events")
             instance!!.events?.setStreamHandler(eventHandler)
         }
 
@@ -75,8 +67,7 @@ class FlutterCallkitIncomingPlugin : FlutterPlugin, MethodCallHandler, ActivityA
 
     override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         this.context = flutterPluginBinding.applicationContext
-        callkitNotificationManager =
-            CallkitNotificationManager(flutterPluginBinding.applicationContext)
+        callkitNotificationManager = CallkitNotificationManager(flutterPluginBinding.applicationContext)
         channel = MethodChannel(flutterPluginBinding.binaryMessenger, "flutter_callkit_incoming")
         channel?.setMethodCallHandler(this)
         events =
@@ -115,6 +106,19 @@ class FlutterCallkitIncomingPlugin : FlutterPlugin, MethodCallHandler, ActivityA
                 data.toBundle()
             )
         )
+    }
+
+    public fun endAllCalls() {
+        val calls = getDataActiveCalls(context)
+        calls.let {
+            context?.sendBroadcast(
+                CallkitIncomingBroadcastReceiver.getIntentEnded(
+                    requireNotNull(context),
+                    it.toBundle()
+                )
+            )
+        }
+        removeAllCalls(context)
     }
 
     private fun initSocket(context: Context?) {
@@ -177,7 +181,7 @@ class FlutterCallkitIncomingPlugin : FlutterPlugin, MethodCallHandler, ActivityA
                     result.success("OK")
                 }
                 "activeCalls" -> {
-//                    result.success(getActiveCalls(context))
+                    result.success(getActiveCalls(context))
                 }
                 "getDevicePushTokenVoIP" -> {
                     result.success("")
@@ -217,7 +221,7 @@ class FlutterCallkitIncomingPlugin : FlutterPlugin, MethodCallHandler, ActivityA
             eventSink = sink
         }
 
-        fun send(event: String, body: Map<String, Any>, context: Context) {
+        fun send(event: String, body: Map<String, Any>,context: Context) {
             val data = mapOf(
                 "event" to event,
                 "body" to body
