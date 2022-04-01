@@ -3,13 +3,19 @@ package com.khailv.flutter_callkit_incoming
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
+import android.os.Handler
+import android.os.Looper
 import android.provider.Settings
+import android.util.Log
 import android.widget.Toast
 import com.google.firebase.messaging.FirebaseMessagingService
+import com.google.gson.Gson
 import com.khailv.flutter_callkit_incoming.utis.Const
 import com.khailv.flutter_callkit_incoming.utis.PreKey
+import com.khailv.flutter_callkit_incoming.utis.SocketEventType
 import io.socket.client.IO
 import io.socket.client.Socket
+import io.socket.emitter.Emitter
 import io.socket.engineio.client.transports.WebSocket
 import org.json.JSONObject
 
@@ -37,6 +43,37 @@ class SocketIoManager {
             socket = IO.socket(Const.SOCKET_URL, options)
             socket?.connect()
         }
+//        _listenEvent(context);
+    }
+
+    fun _listenEvent(context: Context) {
+        socket?.on(Const.CALL_EVENT, Emitter.Listener {
+            it.let {
+                val data = it.get(0)
+                Log.d("CALLLLLLLL",data.toString());
+                data.let { it1 ->
+                    val call = Gson().fromJson(it1.toString(), SocketModel::class.java)
+                    Log.d("CALLLLLLLL111111",call.type);
+
+//                    Handler(Looper.getMainLooper()).post {
+//                        Toast.makeText(context, call.type+"    "+it, Toast.LENGTH_SHORT).show();
+//                    }
+                    if (call.type == SocketEventType.REJECT_CALL_TO_RECEIVER ||
+                        call.type == SocketEventType.DISCONNECT_CALL ||
+                        call.type == SocketEventType.RECEIVED_CALL_TO_RECEIVER ||
+                        call.type == SocketEventType.MISS_CALL ||
+                        call.type == SocketEventType.STOP_CALL_TO_RECEIVER
+                    ) {
+                        val callkit = FlutterCallkitIncomingPlugin.getInstance();
+                        callkit.endAllCalls();
+
+                    }
+
+                }
+
+            }
+
+        })
     }
 
 

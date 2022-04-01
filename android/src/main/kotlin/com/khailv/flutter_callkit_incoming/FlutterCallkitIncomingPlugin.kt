@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.widget.Toast
 import androidx.annotation.NonNull
 import androidx.annotation.Nullable
@@ -48,7 +49,7 @@ class FlutterCallkitIncomingPlugin : FlutterPlugin, MethodCallHandler, ActivityA
             instance!!.channel = MethodChannel(flutterPluginBinding.binaryMessenger, "flutter_callkit_incoming")
             instance!!.channel?.setMethodCallHandler(handler)
             instance!!.events =
-                EventChannel(flutterPluginBinding.binaryMessenger, "flutter_callkit_incoming_events")
+                    EventChannel(flutterPluginBinding.binaryMessenger, "flutter_callkit_incoming_events")
             instance!!.events?.setStreamHandler(eventHandler)
         }
 
@@ -71,7 +72,7 @@ class FlutterCallkitIncomingPlugin : FlutterPlugin, MethodCallHandler, ActivityA
         channel = MethodChannel(flutterPluginBinding.binaryMessenger, "flutter_callkit_incoming")
         channel?.setMethodCallHandler(this)
         events =
-            EventChannel(flutterPluginBinding.binaryMessenger, "flutter_callkit_incoming_events")
+                EventChannel(flutterPluginBinding.binaryMessenger, "flutter_callkit_incoming_events")
 //        Toast.makeText(context, "onAttachedToEngine", Toast.LENGTH_LONG).show();
 
         events?.setStreamHandler(eventHandler)
@@ -83,28 +84,28 @@ class FlutterCallkitIncomingPlugin : FlutterPlugin, MethodCallHandler, ActivityA
         callkitNotificationManager?.showIncomingNotification(data.toBundle())
         //send BroadcastReceiver
         context?.sendBroadcast(
-            CallkitIncomingBroadcastReceiver.getIntentIncoming(
-                requireNotNull(context),
-                data.toBundle()
-            )
+                CallkitIncomingBroadcastReceiver.getIntentIncoming(
+                        requireNotNull(context),
+                        data.toBundle()
+                )
         )
     }
 
     public fun startCall(data: Data) {
         context?.sendBroadcast(
-            CallkitIncomingBroadcastReceiver.getIntentStart(
-                requireNotNull(context),
-                data.toBundle()
-            )
+                CallkitIncomingBroadcastReceiver.getIntentStart(
+                        requireNotNull(context),
+                        data.toBundle()
+                )
         )
     }
 
     public fun endCall(data: Data) {
         context?.sendBroadcast(
-            CallkitIncomingBroadcastReceiver.getIntentEnded(
-                requireNotNull(context),
-                data.toBundle()
-            )
+                CallkitIncomingBroadcastReceiver.getIntentEnded(
+                        requireNotNull(context),
+                        data.toBundle()
+                )
         )
     }
 
@@ -134,36 +135,35 @@ class FlutterCallkitIncomingPlugin : FlutterPlugin, MethodCallHandler, ActivityA
         try {
             when (call.method) {
                 "showCallkitIncoming" -> {
-                    initSocket(context)
                     val data = Data(call.arguments())
                     data.from = "notification"
                     callkitNotificationManager?.showIncomingNotification(data.toBundle())
                     //send BroadcastReceiver
                     context?.sendBroadcast(
-                        CallkitIncomingBroadcastReceiver.getIntentIncoming(
-                            requireNotNull(context),
-                            data.toBundle()
-                        )
+                            CallkitIncomingBroadcastReceiver.getIntentIncoming(
+                                    requireNotNull(context),
+                                    data.toBundle()
+                            )
                     )
                     result.success("OK")
                 }
                 "startCall" -> {
                     val data = Data(call.arguments())
                     context?.sendBroadcast(
-                        CallkitIncomingBroadcastReceiver.getIntentStart(
-                            requireNotNull(context),
-                            data.toBundle()
-                        )
+                            CallkitIncomingBroadcastReceiver.getIntentStart(
+                                    requireNotNull(context),
+                                    data.toBundle()
+                            )
                     )
                     result.success("OK")
                 }
                 "endCall" -> {
                     val data = Data(call.arguments())
                     context?.sendBroadcast(
-                        CallkitIncomingBroadcastReceiver.getIntentEnded(
-                            requireNotNull(context),
-                            data.toBundle()
-                        )
+                            CallkitIncomingBroadcastReceiver.getIntentEnded(
+                                    requireNotNull(context),
+                                    data.toBundle()
+                            )
                     )
                     result.success("OK")
                 }
@@ -171,10 +171,10 @@ class FlutterCallkitIncomingPlugin : FlutterPlugin, MethodCallHandler, ActivityA
                     val calls = getDataActiveCalls(context)
                     calls.forEach {
                         context?.sendBroadcast(
-                            CallkitIncomingBroadcastReceiver.getIntentEnded(
-                                requireNotNull(context),
-                                it.toBundle()
-                            )
+                                CallkitIncomingBroadcastReceiver.getIntentEnded(
+                                        requireNotNull(context),
+                                        it.toBundle()
+                                )
                         )
                     }
                     removeAllCalls(context)
@@ -223,8 +223,8 @@ class FlutterCallkitIncomingPlugin : FlutterPlugin, MethodCallHandler, ActivityA
 
         fun send(event: String, body: Map<String, Any>,context: Context) {
             val data = mapOf(
-                "event" to event,
-                "body" to body
+                    "event" to event,
+                    "body" to body
             )
             Handler(Looper.getMainLooper()).post {
 //                Toast.makeText(context,"sendddddddddddddddddđ $body", Toast.LENGTH_LONG).show();

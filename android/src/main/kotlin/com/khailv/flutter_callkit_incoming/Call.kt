@@ -52,7 +52,7 @@ data class Data(val args: Map<String, Any?>) {
     }
 
     override fun equals(other: Any?): Boolean {
-        if(other == null) return false
+        if (other == null) return false
         val e: Data = other as Data
         return this.id == e.id
     }
