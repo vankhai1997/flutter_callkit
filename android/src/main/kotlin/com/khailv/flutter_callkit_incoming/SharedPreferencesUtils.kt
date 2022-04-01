@@ -37,6 +37,20 @@ fun removeAllCalls(context: Context?) {
     remove(context, "ACTIVE_CALLS")
 }
 
+fun getActiveCalls(context: Context?): String {
+    val json = getString(context, "ACTIVE_CALLS", "")
+    val arrayData: Data = Utils.getGsonInstance()
+        .fromJson(json, object : TypeToken<Data>() {}.type)
+    return Utils.getGsonInstance().toJson(arrayData)
+}
+
+fun getDataActiveCalls(context: Context?): Data {
+    val json = getString(context, "ACTIVE_CALLS", "")
+    return Utils.getGsonInstance()
+        .fromJson(json, object : TypeToken<Data>() {}.type)
+}
+
+
 fun putString(context: Context?, key: String, value: String?) {
     if (context == null) return
     initInstance(context)
