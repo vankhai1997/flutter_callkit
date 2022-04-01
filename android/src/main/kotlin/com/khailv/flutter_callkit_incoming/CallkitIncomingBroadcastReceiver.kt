@@ -102,6 +102,7 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
                         Intent(context, CallkitSoundPlayerService::class.java)
                     soundPlayerServiceIntent.putExtras(data)
                     context.startService(soundPlayerServiceIntent)
+                    addCall(context, Data.fromBundle(data))
                 } catch (error: Exception) {
                     error.printStackTrace()
                 }
@@ -109,7 +110,7 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
             ACTION_CALL_START -> {
                 try {
                     sendEventFlutter(ACTION_CALL_START, data, context)
-//                    addCall(context, Data.fromBundle(data))
+                    addCall(context, Data.fromBundle(data))
                 } catch (error: Exception) {
                     error.printStackTrace()
                 }
@@ -118,6 +119,7 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
                 try {
                     SocketIoManager.instance.disConnect()
                     addCall(context, Data.fromBundle(data))
+                    acceptCall(context, Data.fromBundle(data));
                     Utils.backToForeground(context)
                     sendEventFlutter(ACTION_CALL_ACCEPT, data, context)
                     context.stopService(Intent(context, CallkitSoundPlayerService::class.java))
