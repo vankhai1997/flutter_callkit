@@ -2,7 +2,6 @@ package com.khailv.flutter_callkit_incoming
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.util.Log
 import com.google.gson.reflect.TypeToken
 
 
@@ -22,10 +21,6 @@ fun addCall(context: Context?, data: Data) {
         .fromJson(json, object : TypeToken<ArrayList<Data>>() {}.type)
     arrayData.add(data)
     putString(context, "ACTIVE_CALLS", Utils.getGsonInstance().toJson(arrayData))
-}
-
-fun acceptCall(context: Context?, data: Data) {
-    putString(context, "ACCEPT_CALLS", Utils.getGsonInstance().toJson(data))
 }
 
 fun removeCall(context: Context?, data: Data) {

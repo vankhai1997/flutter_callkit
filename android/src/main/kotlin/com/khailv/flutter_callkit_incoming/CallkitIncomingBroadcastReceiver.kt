@@ -119,7 +119,6 @@ class CallkitIncomingBroadcastReceiver : BroadcastReceiver() {
                 try {
 
                     addCall(context, Data.fromBundle(data))
-                    acceptCall(context, Data.fromBundle(data));
                     Utils.backToForeground(context)
                     sendEventFlutter(ACTION_CALL_ACCEPT, data, context)
                     context.stopService(Intent(context, CallkitSoundPlayerService::class.java))
