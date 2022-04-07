@@ -173,21 +173,27 @@ class FlutterCallkitIncomingPlugin : FlutterPlugin, MethodCallHandler, ActivityA
                 "endAllCalls" -> {
                     val calls = getDataActiveCalls(context)
                     calls.forEach {
-                        if (it.isAccepted) {
-                            context?.sendBroadcast(
-                                CallkitIncomingBroadcastReceiver.getIntentEnded(
-                                    requireNotNull(context),
-                                    it.toBundle()
-                                )
+//                        if (it.isAccepted) {
+//                            context?.sendBroadcast(
+//                                CallkitIncomingBroadcastReceiver.getIntentEnded(
+//                                    requireNotNull(context),
+//                                    it.toBundle()
+//                                )
+//                            )
+//                        } else {
+//                            context?.sendBroadcast(
+//                                CallkitIncomingBroadcastReceiver.getIntentDecline(
+//                                    requireNotNull(context),
+//                                    it.toBundle()
+//                                )
+//                            )
+//                        }
+                        context?.sendBroadcast(
+                            CallkitIncomingBroadcastReceiver.getIntentEnded(
+                                requireNotNull(context),
+                                it.toBundle()
                             )
-                        } else {
-                            context?.sendBroadcast(
-                                CallkitIncomingBroadcastReceiver.getIntentDecline(
-                                    requireNotNull(context),
-                                    it.toBundle()
-                                )
-                            )
-                        }
+                        )
                     }
                     removeAllCalls(context)
                     result.success("OK")
