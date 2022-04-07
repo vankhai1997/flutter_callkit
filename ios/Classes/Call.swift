@@ -11,6 +11,7 @@ import AVFoundation
 public class Call: NSObject {
     
     let uuid: UUID
+    let data: Data
     let isOutGoing: Bool
     
     var handle: String?
@@ -87,8 +88,9 @@ public class Call: NSObject {
         return Date().timeIntervalSince(connectDate)
     }
     
-    init(uuid: UUID, isOutGoing: Bool = false){
+    init(uuid: UUID, data: Data, isOutGoing: Bool = false){
         self.uuid = uuid
+        self.data = data
         self.isOutGoing = isOutGoing
     }
     
@@ -118,31 +120,31 @@ public class Call: NSObject {
 }
 
 @objc public class Data: NSObject {
-    let uuid: String
-    let nameCaller: String
-    let appName: String
-    let handle: String
-    let avatar: String
-    let type: Int
-    let duration: Int
-    let extra: [String: Any?]
+    @objc public var uuid: String
+    @objc public var nameCaller: String
+    @objc public var appName: String
+    @objc public var handle: String
+    @objc public var avatar: String
+    @objc public var type: Int
+    @objc public var duration: Int
+    @objc public var extra: NSDictionary
     
     //iOS
-    let iconName: String
-    let handleType: String
-    let supportsVideo: Bool
-    let maximumCallGroups: Int
-    let maximumCallsPerCallGroup: Int
-    let supportsDTMF: Bool
-    let supportsHolding: Bool
-    let supportsGrouping: Bool
-    let supportsUngrouping: Bool
-    let includesCallsInRecents: Bool
-    let ringtonePath: String
-    let audioSessionMode: String
-    let audioSessionActive: Bool
-    let audioSessionPreferredSampleRate: Double
-    let audioSessionPreferredIOBufferDuration: Double
+    @objc public var iconName: String
+    @objc public var handleType: String
+    @objc public var supportsVideo: Bool
+    @objc public var maximumCallGroups: Int
+    @objc public var maximumCallsPerCallGroup: Int
+    @objc public var supportsDTMF: Bool
+    @objc public var supportsHolding: Bool
+    @objc public var supportsGrouping: Bool
+    @objc public var supportsUngrouping: Bool
+    @objc public var includesCallsInRecents: Bool
+    @objc public var ringtonePath: String
+    @objc public var audioSessionMode: String
+    @objc public var audioSessionActive: Bool
+    @objc public var audioSessionPreferredSampleRate: Double
+    @objc public var audioSessionPreferredIOBufferDuration: Double
     
     @objc public init(id: String, nameCaller: String, handle: String, type: Int) {
         self.uuid = id
@@ -170,6 +172,14 @@ public class Call: NSObject {
         self.audioSessionPreferredIOBufferDuration = 0.005
     }
     
+    @objc public convenience init(args: NSDictionary) {
+        var argsConvert = [String: Any?]()
+        for (value, key) in args {
+            argsConvert[key as! String] = value
+        }
+        self.init(args: argsConvert)
+    }
+    
     public init(args: [String: Any?]) {
         self.uuid = args["id"] as? String ?? ""
         self.nameCaller = args["nameCaller"] as? String ?? ""
@@ -178,7 +188,7 @@ public class Call: NSObject {
         self.avatar = args["avatar"] as? String ?? ""
         self.type = args["type"] as? Int ?? 0
         self.duration = args["duration"] as? Int ?? 30000
-        self.extra = args["extra"] as? [String: Any?] ?? [:]
+        self.extra = args["extra"] as? NSDictionary ?? [:]
         
         
         if let ios = args["ios"] as? [String: Any] {
@@ -198,21 +208,21 @@ public class Call: NSObject {
             self.audioSessionPreferredSampleRate = ios["audioSessionPreferredSampleRate"] as? Double ?? 44100.0
             self.audioSessionPreferredIOBufferDuration = ios["audioSessionPreferredIOBufferDuration"] as? Double ?? 0.005
         }else {
-            self.iconName = "CallKitLogo"
-            self.handleType = ""
-            self.supportsVideo = true
-            self.maximumCallGroups = 2
-            self.maximumCallsPerCallGroup = 1
-            self.supportsDTMF = true
-            self.supportsHolding = true
-            self.supportsGrouping = true
-            self.supportsUngrouping = true
-            self.includesCallsInRecents = true
-            self.ringtonePath = ""
-            self.audioSessionMode = ""
-            self.audioSessionActive = true
-            self.audioSessionPreferredSampleRate = 44100.0
-            self.audioSessionPreferredIOBufferDuration = 0.005
+            self.iconName = args["iconName"] as? String ?? "CallKitLogo"
+            self.handleType = args["handleType"] as? String ?? ""
+            self.supportsVideo = args["supportsVideo"] as? Bool ?? true
+            self.maximumCallGroups = args["maximumCallGroups"] as? Int ?? 2
+            self.maximumCallsPerCallGroup =  args["maximumCallsPerCallGroup"] as? Int ?? 1
+            self.supportsDTMF = args["supportsDTMF"] as? Bool ?? true
+            self.supportsHolding = args["supportsHolding"] as? Bool ?? true
+            self.supportsGrouping = args["supportsGrouping"] as? Bool ?? true
+            self.supportsUngrouping = args["supportsUngrouping"] as? Bool ?? true
+            self.includesCallsInRecents = args["includesCallsInRecents"] as? Bool ?? true
+            self.ringtonePath = args["ringtonePath"] as? String ?? ""
+            self.audioSessionMode = args["audioSessionMode"] as? String ?? ""
+            self.audioSessionActive = args["audioSessionActive"] as? Bool ?? true
+            self.audioSessionPreferredSampleRate = args["audioSessionPreferredSampleRate"] as? Double ?? 44100.0
+            self.audioSessionPreferredIOBufferDuration = args["audioSessionPreferredIOBufferDuration"] as? Double ?? 0.005
         }
     }
     
@@ -236,6 +246,7 @@ public class Call: NSObject {
         ] as [String : Any?]
         let map = [
             "uuid": uuid,
+            "id": uuid,
             "nameCaller": nameCaller,
             "appName": appName,
             "handle": handle,

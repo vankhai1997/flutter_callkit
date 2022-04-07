@@ -1,7 +1,10 @@
-package com.khailv.flutter_callkit_incoming
+package com.hiennv.flutter_callkit_incoming
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.KeyguardManager
+import android.app.KeyguardManager.KeyguardLock
+import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -12,24 +15,25 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.View
+import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowManager
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.khailv.flutter_callkit_incoming.CallkitIncomingBroadcastReceiver.Companion.ACTION_CALL_INCOMING
-import com.khailv.flutter_callkit_incoming.CallkitIncomingBroadcastReceiver.Companion.EXTRA_CALLKIT_AVATAR
-import com.khailv.flutter_callkit_incoming.CallkitIncomingBroadcastReceiver.Companion.EXTRA_CALLKIT_BACKGROUND_URL
-import com.khailv.flutter_callkit_incoming.CallkitIncomingBroadcastReceiver.Companion.EXTRA_CALLKIT_BACKGROUND_COLOR
-import com.khailv.flutter_callkit_incoming.CallkitIncomingBroadcastReceiver.Companion.EXTRA_CALLKIT_DURATION
-import com.khailv.flutter_callkit_incoming.CallkitIncomingBroadcastReceiver.Companion.EXTRA_CALLKIT_INCOMING_DATA
-import com.khailv.flutter_callkit_incoming.CallkitIncomingBroadcastReceiver.Companion.EXTRA_CALLKIT_NAME_CALLER
-import com.khailv.flutter_callkit_incoming.CallkitIncomingBroadcastReceiver.Companion.EXTRA_CALLKIT_HANDLE
-import com.khailv.flutter_callkit_incoming.CallkitIncomingBroadcastReceiver.Companion.EXTRA_CALLKIT_HEADERS
-import com.khailv.flutter_callkit_incoming.CallkitIncomingBroadcastReceiver.Companion.EXTRA_CALLKIT_IS_SHOW_LOGO
-import com.khailv.flutter_callkit_incoming.CallkitIncomingBroadcastReceiver.Companion.EXTRA_CALLKIT_TYPE
-import com.khailv.flutter_callkit_incoming.widgets.RippleRelativeLayout
+import com.hiennv.flutter_callkit_incoming.CallkitIncomingBroadcastReceiver.Companion.ACTION_CALL_INCOMING
+import com.hiennv.flutter_callkit_incoming.CallkitIncomingBroadcastReceiver.Companion.EXTRA_CALLKIT_AVATAR
+import com.hiennv.flutter_callkit_incoming.CallkitIncomingBroadcastReceiver.Companion.EXTRA_CALLKIT_BACKGROUND_URL
+import com.hiennv.flutter_callkit_incoming.CallkitIncomingBroadcastReceiver.Companion.EXTRA_CALLKIT_BACKGROUND_COLOR
+import com.hiennv.flutter_callkit_incoming.CallkitIncomingBroadcastReceiver.Companion.EXTRA_CALLKIT_DURATION
+import com.hiennv.flutter_callkit_incoming.CallkitIncomingBroadcastReceiver.Companion.EXTRA_CALLKIT_INCOMING_DATA
+import com.hiennv.flutter_callkit_incoming.CallkitIncomingBroadcastReceiver.Companion.EXTRA_CALLKIT_NAME_CALLER
+import com.hiennv.flutter_callkit_incoming.CallkitIncomingBroadcastReceiver.Companion.EXTRA_CALLKIT_HANDLE
+import com.hiennv.flutter_callkit_incoming.CallkitIncomingBroadcastReceiver.Companion.EXTRA_CALLKIT_HEADERS
+import com.hiennv.flutter_callkit_incoming.CallkitIncomingBroadcastReceiver.Companion.EXTRA_CALLKIT_IS_SHOW_LOGO
+import com.hiennv.flutter_callkit_incoming.CallkitIncomingBroadcastReceiver.Companion.EXTRA_CALLKIT_TYPE
+import com.hiennv.flutter_callkit_incoming.widgets.RippleRelativeLayout
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 import kotlin.math.abs
@@ -37,13 +41,18 @@ import okhttp3.OkHttpClient
 import com.squareup.picasso.OkHttp3Downloader
 import android.view.ViewGroup.MarginLayoutParams
 import android.os.PowerManager
+import android.os.PowerManager.WakeLock
+import android.text.TextUtils
+import com.hiennv.flutter_callkit_incoming.CallkitIncomingBroadcastReceiver.Companion.EXTRA_CALLKIT_TEXT_ACCEPT
+import com.hiennv.flutter_callkit_incoming.CallkitIncomingBroadcastReceiver.Companion.EXTRA_CALLKIT_TEXT_DECLINE
 
 
 class CallkitIncomingActivity : Activity() {
+
     companion object {
 
         const val ACTION_ENDED_CALL_INCOMING =
-            "com.khailv.flutter_callkit_incoming.ACTION_ENDED_CALL_INCOMING"
+            "com.hiennv.flutter_callkit_incoming.ACTION_ENDED_CALL_INCOMING"
 
         fun getIntent(data: Bundle) = Intent(ACTION_CALL_INCOMING).apply {
             action = ACTION_CALL_INCOMING
@@ -81,7 +90,10 @@ class CallkitIncomingActivity : Activity() {
 
     private lateinit var llAction: LinearLayout
     private lateinit var ivAcceptCall: ImageView
+    private lateinit var tvAccept: TextView
+
     private lateinit var ivDeclineCall: ImageView
+    private lateinit var tvDecline: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -181,6 +193,11 @@ class CallkitIncomingActivity : Activity() {
 
         finishTimeout(data, duration)
 
+        val textAccept = data?.getString(EXTRA_CALLKIT_TEXT_ACCEPT, "")
+        tvAccept.text = if(TextUtils.isEmpty(textAccept)) getString(R.string.text_accept) else textAccept
+        val textDecline = data?.getString(EXTRA_CALLKIT_TEXT_DECLINE, "")
+        tvDecline.text = if(TextUtils.isEmpty(textDecline)) getString(R.string.text_decline) else textDecline
+
         val backgroundColor = data?.getString(EXTRA_CALLKIT_BACKGROUND_COLOR, "#0955fa")
         try {
             ivBackground.setBackgroundColor(Color.parseColor(backgroundColor))
@@ -230,11 +247,13 @@ class CallkitIncomingActivity : Activity() {
         llAction = findViewById(R.id.llAction)
 
         val params = llAction.layoutParams as MarginLayoutParams
-        params.setMargins(0, 0, 0, Utils.getNavigationBarHeight(this@CallkitIncomingActivity))
+        params.setMargins(0,0,0,Utils.getNavigationBarHeight(this@CallkitIncomingActivity))
         llAction.layoutParams = params
 
         ivAcceptCall = findViewById(R.id.ivAcceptCall)
+        tvAccept = findViewById(R.id.tvAccept)
         ivDeclineCall = findViewById(R.id.ivDeclineCall)
+        tvDecline = findViewById(R.id.tvDecline)
         animateAcceptCall()
 
         ivAcceptCall.setOnClickListener {
@@ -251,16 +270,18 @@ class CallkitIncomingActivity : Activity() {
         ivAcceptCall.animation = shakeAnimation
     }
 
-    override fun onNewIntent(intent: Intent?) {
-        onAcceptClick();
-        super.onNewIntent(intent)
-    }
 
     private fun onAcceptClick() {
         val data = intent.extras?.getBundle(EXTRA_CALLKIT_INCOMING_DATA)
-        val intent =
-            CallkitIncomingBroadcastReceiver.getIntentAccept(this@CallkitIncomingActivity, data)
-        sendBroadcast(intent)
+        val intent = packageManager.getLaunchIntentForPackage(packageName)?.cloneFilter()
+        intent?.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        if (intent != null) {
+            val intentTransparent = TransparentActivity.getIntentAccept(this@CallkitIncomingActivity, data)
+            startActivities(arrayOf(intent, intentTransparent))
+        } else {
+            val acceptIntent = CallkitIncomingBroadcastReceiver.getIntentAccept(this@CallkitIncomingActivity, data)
+            sendBroadcast(acceptIntent)
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val keyguardManager = getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
             keyguardManager.requestDismissKeyguard(this, null)

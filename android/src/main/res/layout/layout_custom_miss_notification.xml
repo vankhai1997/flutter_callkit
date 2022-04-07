@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -52,43 +50,9 @@
 
 
         <LinearLayout
-            android:id="@+id/llDecline"
+            android:id="@+id/llCallback"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/base_margin_half"
-            android:layout_weight="1"
-            android:background="@drawable/rounded_button_decline"
-            android:clickable="true"
-            android:focusable="true"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/base_margin"
-                android:src="@drawable/ic_decline"
-                android:tint="@android:color/white"
-                app:tint="@android:color/white"
-                tools:ignore="UseAppTint" />
-
-            <TextView
-                android:id="@+id/tvDecline"
-                style="@style/Widget.Compat.NotificationActionText"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/base_margin_x4"
-                android:gravity="center"
-                android:text="@string/text_decline"
-                android:textAllCaps="false"
-                android:textColor="@android:color/white" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/llAccept"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/base_margin_half"
             android:layout_weight="1"
             android:background="@drawable/rounded_button_accept"
             android:clickable="true"
@@ -96,27 +60,17 @@
             android:gravity="center"
             android:orientation="horizontal">
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/base_margin"
-                android:src="@drawable/ic_accept"
-                android:tint="@android:color/white"
-                app:tint="@android:color/white"
-                tools:ignore="UseAppTint" />
-
             <TextView
-                android:id="@+id/tvAccept"
+                android:id="@+id/tvCallback"
                 style="@style/Widget.Compat.NotificationActionText"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/base_margin_x4"
                 android:gravity="center"
-                android:text="@string/text_accept"
+                android:text="@string/text_call_back"
                 android:textAllCaps="false"
                 android:textColor="@android:color/white" />
 
         </LinearLayout>
-
 
     </LinearLayout>
 

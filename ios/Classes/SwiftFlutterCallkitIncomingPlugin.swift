@@ -6,20 +6,20 @@ import AVFoundation
 @available(iOS 10.0, *)
 public class SwiftFlutterCallkitIncomingPlugin: NSObject, FlutterPlugin, CXProviderDelegate {
     
-    static let ACTION_DID_UPDATE_DEVICE_PUSH_TOKEN_VOIP = "com.khailv.flutter_callkit_incoming.DID_UPDATE_DEVICE_PUSH_TOKEN_VOIP"
+    static let ACTION_DID_UPDATE_DEVICE_PUSH_TOKEN_VOIP = "com.hiennv.flutter_callkit_incoming.DID_UPDATE_DEVICE_PUSH_TOKEN_VOIP"
     
-    static let ACTION_CALL_INCOMING = "com.khailv.flutter_callkit_incoming.ACTION_CALL_INCOMING"
-    static let ACTION_CALL_START = "com.khailv.flutter_callkit_incoming.ACTION_CALL_START"
-    static let ACTION_CALL_ACCEPT = "com.khailv.flutter_callkit_incoming.ACTION_CALL_ACCEPT"
-    static let ACTION_CALL_DECLINE = "com.khailv.flutter_callkit_incoming.ACTION_CALL_DECLINE"
-    static let ACTION_CALL_ENDED = "com.khailv.flutter_callkit_incoming.ACTION_CALL_ENDED"
-    static let ACTION_CALL_TIMEOUT = "com.khailv.flutter_callkit_incoming.ACTION_CALL_TIMEOUT"
+    static let ACTION_CALL_INCOMING = "com.hiennv.flutter_callkit_incoming.ACTION_CALL_INCOMING"
+    static let ACTION_CALL_START = "com.hiennv.flutter_callkit_incoming.ACTION_CALL_START"
+    static let ACTION_CALL_ACCEPT = "com.hiennv.flutter_callkit_incoming.ACTION_CALL_ACCEPT"
+    static let ACTION_CALL_DECLINE = "com.hiennv.flutter_callkit_incoming.ACTION_CALL_DECLINE"
+    static let ACTION_CALL_ENDED = "com.hiennv.flutter_callkit_incoming.ACTION_CALL_ENDED"
+    static let ACTION_CALL_TIMEOUT = "com.hiennv.flutter_callkit_incoming.ACTION_CALL_TIMEOUT"
     
-    static let ACTION_CALL_TOGGLE_HOLD = "com.khailv.flutter_callkit_incoming.ACTION_CALL_TOGGLE_HOLD"
-    static let ACTION_CALL_TOGGLE_MUTE = "com.khailv.flutter_callkit_incoming.ACTION_CALL_TOGGLE_MUTE"
-    static let ACTION_CALL_TOGGLE_DMTF = "com.khailv.flutter_callkit_incoming.ACTION_CALL_TOGGLE_DMTF"
-    static let ACTION_CALL_TOGGLE_GROUP = "com.khailv.flutter_callkit_incoming.ACTION_CALL_TOGGLE_GROUP"
-    static let ACTION_CALL_TOGGLE_AUDIO_SESSION = "com.khailv.flutter_callkit_incoming.ACTION_CALL_TOGGLE_AUDIO_SESSION"
+    static let ACTION_CALL_TOGGLE_HOLD = "com.hiennv.flutter_callkit_incoming.ACTION_CALL_TOGGLE_HOLD"
+    static let ACTION_CALL_TOGGLE_MUTE = "com.hiennv.flutter_callkit_incoming.ACTION_CALL_TOGGLE_MUTE"
+    static let ACTION_CALL_TOGGLE_DMTF = "com.hiennv.flutter_callkit_incoming.ACTION_CALL_TOGGLE_DMTF"
+    static let ACTION_CALL_TOGGLE_GROUP = "com.hiennv.flutter_callkit_incoming.ACTION_CALL_TOGGLE_GROUP"
+    static let ACTION_CALL_TOGGLE_AUDIO_SESSION = "com.hiennv.flutter_callkit_incoming.ACTION_CALL_TOGGLE_AUDIO_SESSION"
     
     @objc public static var sharedInstance: SwiftFlutterCallkitIncomingPlugin? = nil
     
@@ -74,6 +74,9 @@ public class SwiftFlutterCallkitIncomingPlugin: NSObject, FlutterPlugin, CXProvi
                 self.data = Data(args: getArgs)
                 showCallkitIncoming(self.data!, fromPushKit: false)
             }
+            result("OK")
+            break
+        case "showMissCallNotification":
             result("OK")
             break
         case "startCall":
@@ -154,7 +157,7 @@ public class SwiftFlutterCallkitIncomingPlugin: NSObject, FlutterPlugin, CXProvi
         self.sharedProvider?.reportNewIncomingCall(with: uuid!, update: callUpdate) { error in
             if(error == nil) {
                 self.configurAudioSession()
-                let call = Call(uuid: uuid!)
+                let call = Call(uuid: uuid!, data: data)
                 call.handle = data.handle
                 self.callManager?.addCall(call)
                 self.sendEvent(SwiftFlutterCallkitIncomingPlugin.ACTION_CALL_INCOMING, data.toJSON())
@@ -174,15 +177,15 @@ public class SwiftFlutterCallkitIncomingPlugin: NSObject, FlutterPlugin, CXProvi
     @objc public func endCall(_ data: Data) {
         var call: Call? = nil
         if(self.isFromPushKit){
-            call = Call(uuid: UUID(uuidString: self.data!.uuid)!)
+            call = Call(uuid: UUID(uuidString: self.data!.uuid)!, data: data)
             self.isFromPushKit = false
         }else {
-            call = Call(uuid: UUID(uuidString: data.uuid)!)
+            call = Call(uuid: UUID(uuidString: data.uuid)!, data: data)
         }
         self.callManager?.endCall(call: call!)
     }
     
-    @objc public func activeCalls() -> [[String: String]]? {
+    @objc public func activeCalls() -> [[String: Any]]? {
         return self.callManager?.activeCalls()
     }
     
@@ -354,7 +357,7 @@ public class SwiftFlutterCallkitIncomingPlugin: NSObject, FlutterPlugin, CXProvi
     }
     
     public func provider(_ provider: CXProvider, perform action: CXStartCallAction) {
-        let call = Call(uuid: action.callUUID, isOutGoing: true)
+        let call = Call(uuid: action.callUUID, data: self.data!, isOutGoing: true)
         call.handle = action.handle.value
         configurAudioSession()
         call.hasStartedConnectDidChange = { [weak self] in
@@ -364,6 +367,7 @@ public class SwiftFlutterCallkitIncomingPlugin: NSObject, FlutterPlugin, CXProvi
             self?.sharedProvider?.reportOutgoingCall(with: call.uuid, startedConnectingAt: call.connectedData)
         }
         self.outgoingCall = call;
+        self.callManager?.addCall(call)
         self.sendEvent(SwiftFlutterCallkitIncomingPlugin.ACTION_CALL_START, self.data?.toJSON())
         action.fulfill()
     }
@@ -391,7 +395,7 @@ public class SwiftFlutterCallkitIncomingPlugin: NSObject, FlutterPlugin, CXProvi
         }
         call.endCall()
         self.callManager?.removeCall(call)
-        sendEvent(SwiftFlutterCallkitIncomingPlugin.ACTION_CALL_ENDED, self.data?.toJSON())
+        sendEvent(SwiftFlutterCallkitIncomingPlugin.ACTION_CALL_DECLINE, self.data?.toJSON())
         action.fulfill()
     }
     

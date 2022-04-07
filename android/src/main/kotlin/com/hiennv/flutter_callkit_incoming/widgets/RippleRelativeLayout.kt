@@ -1,4 +1,4 @@
-package com.khailv.flutter_callkit_incoming.widgets
+package com.hiennv.flutter_callkit_incoming.widgets
 
 import android.animation.Animator
 import android.animation.AnimatorSet
@@ -7,13 +7,14 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.TypedArray
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.RelativeLayout
-import com.khailv.flutter_callkit_incoming.R
-import com.khailv.flutter_callkit_incoming.Utils
+import com.hiennv.flutter_callkit_incoming.R
+import com.hiennv.flutter_callkit_incoming.Utils
 import kotlin.math.min
 
 

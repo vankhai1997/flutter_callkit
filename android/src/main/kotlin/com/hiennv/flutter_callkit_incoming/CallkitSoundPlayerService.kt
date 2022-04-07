@@ -1,5 +1,6 @@
-package com.khailv.flutter_callkit_incoming
+package com.hiennv.flutter_callkit_incoming
 
+import android.app.NotificationManager
 import android.app.Service
 import android.content.Context
 import android.content.Intent
@@ -10,49 +11,61 @@ import android.media.RingtoneManager
 import android.net.Uri
 import android.os.*
 import android.text.TextUtils
+import com.hiennv.flutter_callkit_incoming.socket.SocketIoManager
 
 class CallkitSoundPlayerService : Service() {
 
     private var vibrator: Vibrator? = null
     private var mediaPlayer: MediaPlayer? = null
     private var data: Bundle? = null
-    private val handler: Handler = Handler(Looper.getMainLooper())
-
-    private val runnableTimeout = Runnable {
-        val intent = CallkitIncomingBroadcastReceiver.getIntentTimeout(this@CallkitSoundPlayerService, data)
-        sendBroadcast(intent)
-        stopSelf()
-    }
 
     override fun onBind(p0: Intent?): IBinder? {
         return null
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-
+        this.prepare()
         this.playSound(intent)
         this.playVibrator()
         return START_STICKY;
     }
 
+    private fun closeAllNotifications() {
+        val notificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.cancelAll()
+    }
+
+    override fun onTaskRemoved(rootIntent: Intent?) {
+        super.onTaskRemoved(rootIntent)
+        closeAllNotifications();
+        stopSelf();
+    }
+
     override fun onDestroy() {
         super.onDestroy()
-        handler.removeCallbacks(runnableTimeout)
+        mediaPlayer?.stop()
+        mediaPlayer?.release()
+        vibrator?.cancel()
+    }
+
+    private fun prepare() {
         mediaPlayer?.stop()
         mediaPlayer?.release()
         vibrator?.cancel()
     }
 
     private fun playVibrator() {
-        vibrator  = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            val vibratorManager =  this.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
+        vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            val vibratorManager =
+                this.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
             vibratorManager.defaultVibrator
         } else {
             getSystemService(VIBRATOR_SERVICE) as Vibrator
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             vibrator?.vibrate(VibrationEffect.createWaveform(longArrayOf(0L, 1000L, 1000L), 0))
-        }else{
+        } else {
             vibrator?.vibrate(longArrayOf(0L, 1000L, 1000L), 0)
         }
     }
@@ -63,12 +76,8 @@ class CallkitSoundPlayerService : Service() {
             CallkitIncomingBroadcastReceiver.EXTRA_CALLKIT_RINGTONE_PATH,
             ""
         )
-        val duration = this.data?.getLong(
-            CallkitIncomingBroadcastReceiver.EXTRA_CALLKIT_DURATION,
-            60000L
-        )
         var uri = sound?.let { getRingtoneUri(it) }
-        if(uri == null){
+        if (uri == null) {
             uri = RingtoneManager.getActualDefaultRingtoneUri(
                 this@CallkitSoundPlayerService,
                 RingtoneManager.TYPE_RINGTONE
@@ -92,9 +101,6 @@ class CallkitSoundPlayerService : Service() {
             mediaPlayer?.start()
         } catch (e: Exception) {
             e.printStackTrace()
-        }
-        if (duration != null) {
-            handler.postDelayed(runnableTimeout, duration)
         }
     }
 
