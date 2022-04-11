@@ -38,8 +38,9 @@ class CallkitSoundPlayerService : Service() {
 
     override fun onTaskRemoved(rootIntent: Intent?) {
         super.onTaskRemoved(rootIntent)
-        closeAllNotifications();
-        stopSelf();
+        closeAllNotifications()
+        prepare()
+        stopSelf()
     }
 
     override fun onDestroy() {
