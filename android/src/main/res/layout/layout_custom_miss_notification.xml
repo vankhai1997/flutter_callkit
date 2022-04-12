@@ -58,7 +58,8 @@
             android:clickable="true"
             android:focusable="true"
             android:gravity="center"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <TextView
                 android:id="@+id/tvCallback"
