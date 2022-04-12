@@ -4,7 +4,6 @@
 //
 //  Created by Hien Nguyen on 07/10/2021.
 //
-
 import Foundation
 import AVFoundation
 
@@ -128,7 +127,8 @@ public class Call: NSObject {
     @objc public var type: Int
     @objc public var duration: Int
     @objc public var extra: NSDictionary
-    
+    @objc public var extraRecent: String
+
     //iOS
     @objc public var iconName: String
     @objc public var handleType: String
@@ -146,7 +146,7 @@ public class Call: NSObject {
     @objc public var audioSessionPreferredSampleRate: Double
     @objc public var audioSessionPreferredIOBufferDuration: Double
     
-    @objc public init(id: String, nameCaller: String, handle: String, type: Int) {
+    @objc public init(id: String, nameCaller: String, handle: String, type: Int,extra: NSDictionary,extraRecent: String) {
         self.uuid = id
         self.nameCaller = nameCaller
         self.appName = "Callkit"
@@ -154,7 +154,8 @@ public class Call: NSObject {
         self.avatar = ""
         self.type = type
         self.duration = 30000
-        self.extra = [:]
+        self.extra = extra
+        self.extraRecent = extraRecent
         self.iconName = "CallKitLogo"
         self.handleType = ""
         self.supportsVideo = true
@@ -188,6 +189,7 @@ public class Call: NSObject {
         self.avatar = args["avatar"] as? String ?? ""
         self.type = args["type"] as? Int ?? 0
         self.duration = args["duration"] as? Int ?? 30000
+        self.extraRecent = args["extraRecent"] as? String ?? ""
         self.extra = args["extra"] as? NSDictionary ?? [:]
         
         
@@ -254,14 +256,24 @@ public class Call: NSObject {
             "type": type,
             "duration": duration,
             "extra": extra,
+            "extraRecent": extraRecent,
             "ios": ios
         ] as [String : Any?]
         return map
     }
     
     func getEncryptHandle() -> String {
-        return String(format: "{\"nameCaller\":\"%@\", \"handle\":\"%@\"}", nameCaller, handle).encryptHandle()
+
+            var anyDict = String()
+             for (value, key) in extra
+             {
+              anyDict += "\(value):\(key),"
+               }
+            print("======convert",anyDict)
+      return String(format: "{\"nameCaller\":\"%@\", \"handle\":\"%@\", \"extraRecent\":\"%@\"}", nameCaller, handle,anyDict).encryptHandle()
     }
+
+
     
     
 }

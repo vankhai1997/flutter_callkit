@@ -147,6 +147,7 @@ public class SwiftFlutterCallkitIncomingPlugin: NSObject, FlutterPlugin, CXProvi
         callUpdate.supportsGrouping = data.supportsGrouping
         callUpdate.supportsUngrouping = data.supportsUngrouping
         callUpdate.hasVideo = data.type > 0 ? true : false
+
         callUpdate.localizedCallerName = data.nameCaller
         
         initCallkitProvider(data)
@@ -171,17 +172,14 @@ public class SwiftFlutterCallkitIncomingPlugin: NSObject, FlutterPlugin, CXProvi
             self.data = data
         }
         initCallkitProvider(data)
+                    print("startCall=======",data.toJSON())
+
         self.callManager?.startCall(data)
     }
     
     @objc public func endCall(_ data: Data) {
         var call: Call? = nil
-        if(self.isFromPushKit){
-            call = Call(uuid: UUID(uuidString: self.data!.uuid)!, data: data)
-            self.isFromPushKit = false
-        }else {
-            call = Call(uuid: UUID(uuidString: data.uuid)!, data: data)
-        }
+      call = Call(uuid: UUID(uuidString: data.uuid)!, data: data)
         self.callManager?.endCall(call: call!)
     }
     
