@@ -261,7 +261,7 @@ public class Call: NSObject {
         ] as [String : Any?]
         return map
     }
-    
+
     func getEncryptHandle() -> String {
 
             var anyDict = String()
