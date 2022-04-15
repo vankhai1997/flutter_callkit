@@ -128,7 +128,7 @@ public class Call: NSObject {
     @objc public var type: Int
     @objc public var duration: Int
     @objc public var extra: NSDictionary
-    
+
     //iOS
     @objc public var iconName: String
     @objc public var handleType: String
@@ -146,7 +146,7 @@ public class Call: NSObject {
     @objc public var audioSessionPreferredSampleRate: Double
     @objc public var audioSessionPreferredIOBufferDuration: Double
     
-    @objc public init(id: String, nameCaller: String, handle: String, type: Int) {
+    @objc public init(id: String, nameCaller: String, handle: String, type: Int, extra:NSDictionary) {
         self.uuid = id
         self.nameCaller = nameCaller
         self.appName = "Callkit"
@@ -154,8 +154,9 @@ public class Call: NSObject {
         self.avatar = ""
         self.type = type
         self.duration = 30000
-        self.extra = [:]
-        self.iconName = "CallKitLogo"
+        self.extra = extra
+
+        self.iconName = "AppIcon"
         self.handleType = ""
         self.supportsVideo = true
         self.maximumCallGroups = 2
@@ -189,10 +190,10 @@ public class Call: NSObject {
         self.type = args["type"] as? Int ?? 0
         self.duration = args["duration"] as? Int ?? 30000
         self.extra = args["extra"] as? NSDictionary ?? [:]
-        
+
         
         if let ios = args["ios"] as? [String: Any] {
-            self.iconName = ios["iconName"] as? String ?? "CallKitLogo"
+            self.iconName = ios["iconName"] as? String ?? "AppIcon"
             self.handleType = ios["handleType"] as? String ?? ""
             self.supportsVideo = ios["supportsVideo"] as? Bool ?? true
             self.maximumCallGroups = ios["maximumCallGroups"] as? Int ?? 2
@@ -208,7 +209,7 @@ public class Call: NSObject {
             self.audioSessionPreferredSampleRate = ios["audioSessionPreferredSampleRate"] as? Double ?? 44100.0
             self.audioSessionPreferredIOBufferDuration = ios["audioSessionPreferredIOBufferDuration"] as? Double ?? 0.005
         }else {
-            self.iconName = args["iconName"] as? String ?? "CallKitLogo"
+            self.iconName = args["iconName"] as? String ?? "AppIcon"
             self.handleType = args["handleType"] as? String ?? ""
             self.supportsVideo = args["supportsVideo"] as? Bool ?? true
             self.maximumCallGroups = args["maximumCallGroups"] as? Int ?? 2
@@ -254,13 +255,15 @@ public class Call: NSObject {
             "type": type,
             "duration": duration,
             "extra": extra,
-            "ios": ios
+            "ios": ios,
+
         ] as [String : Any?]
         return map
     }
     
     func getEncryptHandle() -> String {
-        return String(format: "{\"nameCaller\":\"%@\", \"handle\":\"%@\"}", nameCaller, handle).encryptHandle()
+
+        return String(format: "{\"nameCaller\":\"%@\", \"handle\":\"%@\",}", nameCaller, handle).encryptHandle()
     }
     
     
