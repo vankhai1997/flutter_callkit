@@ -24,7 +24,6 @@ class CallManager: NSObject {
         let handle = CXHandle(type: self.getHandleType(data.handleType), value: data.getEncryptHandle())
         let uuid = UUID(uuidString: data.uuid)
         let startCallAction = CXStartCallAction(call: uuid!, handle: handle)
-        print("=========startCall",handle)
         startCallAction.isVideo = data.type > 0
         let callTransaction = CXTransaction()
         callTransaction.addAction(startCallAction)
