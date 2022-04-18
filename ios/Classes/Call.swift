@@ -145,17 +145,16 @@ public class Call: NSObject {
     @objc public var audioSessionActive: Bool
     @objc public var audioSessionPreferredSampleRate: Double
     @objc public var audioSessionPreferredIOBufferDuration: Double
-    
-    @objc public init(id: String, nameCaller: String, handle: String, type: Int, extra:NSDictionary) {
+
+    @objc public init(id: String, nameCaller: String, handle: String, type: Int,extra:NSDictionary) {
         self.uuid = id
         self.nameCaller = nameCaller
-        self.appName = "Callkit"
+        self.appName = "Meey Team"
         self.handle = handle
         self.avatar = ""
         self.type = type
         self.duration = 30000
         self.extra = extra
-
         self.iconName = "AppIcon"
         self.handleType = ""
         self.supportsVideo = true
@@ -172,7 +171,7 @@ public class Call: NSObject {
         self.audioSessionPreferredSampleRate = 44100.0
         self.audioSessionPreferredIOBufferDuration = 0.005
     }
-    
+
     @objc public convenience init(args: NSDictionary) {
         var argsConvert = [String: Any?]()
         for (key, value) in args {
@@ -180,8 +179,9 @@ public class Call: NSObject {
         }
         self.init(args: argsConvert)
     }
-    
+
     public init(args: [String: Any?]) {
+    print("initinitinitinit",args)
         self.uuid = args["id"] as? String ?? ""
         self.nameCaller = args["nameCaller"] as? String ?? ""
         self.appName = args["appName"] as? String ?? "Callkit"
@@ -191,9 +191,8 @@ public class Call: NSObject {
         self.duration = args["duration"] as? Int ?? 30000
         self.extra = args["extra"] as? NSDictionary ?? [:]
 
-        
         if let ios = args["ios"] as? [String: Any] {
-            self.iconName = ios["iconName"] as? String ?? "AppIcon"
+            self.iconName = ios["iconName"] as? String ?? "CallKitLogo"
             self.handleType = ios["handleType"] as? String ?? ""
             self.supportsVideo = ios["supportsVideo"] as? Bool ?? true
             self.maximumCallGroups = ios["maximumCallGroups"] as? Int ?? 2
@@ -209,7 +208,7 @@ public class Call: NSObject {
             self.audioSessionPreferredSampleRate = ios["audioSessionPreferredSampleRate"] as? Double ?? 44100.0
             self.audioSessionPreferredIOBufferDuration = ios["audioSessionPreferredIOBufferDuration"] as? Double ?? 0.005
         }else {
-            self.iconName = args["iconName"] as? String ?? "AppIcon"
+            self.iconName = args["iconName"] as? String ?? "CallKitLogo"
             self.handleType = args["handleType"] as? String ?? ""
             self.supportsVideo = args["supportsVideo"] as? Bool ?? true
             self.maximumCallGroups = args["maximumCallGroups"] as? Int ?? 2
@@ -226,7 +225,7 @@ public class Call: NSObject {
             self.audioSessionPreferredIOBufferDuration = args["audioSessionPreferredIOBufferDuration"] as? Double ?? 0.005
         }
     }
-    
+
     func toJSON() -> [String: Any?] {
         let ios = [
             "iconName": iconName,
@@ -255,15 +254,21 @@ public class Call: NSObject {
             "type": type,
             "duration": duration,
             "extra": extra,
-            "ios": ios,
-
+            "ios": ios
         ] as [String : Any?]
         return map
     }
-    
-    func getEncryptHandle() -> String {
 
-        return String(format: "{\"nameCaller\":\"%@\", \"handle\":\"%@\",}", nameCaller, handle).encryptHandle()
+
+    func getEncryptHandle() -> String {
+            let senderId = extra["senderId"] as? String ?? ""
+            let senderName = extra["senderName"] as? String ?? ""
+            let receiverId = extra["receiverId"] as? String ?? ""
+            let receiverName = extra["receiverName"] as? String ?? ""
+            let roomId = extra["roomId"] as? String ?? ""
+            let time = extra["time"] as? String ?? "0"
+
+        return String(format: "{\"nameCaller\":\"%@\", \"handle\":\"%@\", \"senderId\":\"%@\", \"senderName\":\"%@\", \"receiverId\":\"%@\", \"roomId\":\"%@\", \"time\":\"%@\", \"receiverName\":\"%@\",}", nameCaller,handle, senderId, senderName, receiverId, roomId, time, receiverName).encryptHandle()
     }
     
     

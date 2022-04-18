@@ -21,6 +21,8 @@ class CallManager: NSObject {
     }
     
     func startCall(_ data: Data) {
+    print("===============startCall",data.getEncryptHandle())
+    print("===============startCall","ZDAwMzBjOThhZDI5ZmYwMjJiMmRjY2M1OGQ0NTYxZGEyZGMxYjA2MDA5OTBkNzZiNTUxYjkwZGVmMjQxZTFhZWVhMDA3NzczZmU2NGU3ZmQzMTY1YThiNDBmZWYxNjJhZmQyNGY2Y2JlMDQ4ZDA1OTVjY2E3YjA4Yzg2YWMyNjMxZWJmNTFmNDgwMzViNzU2MmNkNzg2MGQ0NTQ5YjQxYzJkNDA0YWUzMDIwOTdjZGY4NTNmZmNjNWI1NDM0MzMxMjgwNmQ3OTZiNTA1Y2RmMGI5MzQ3N2VlMGJlMjIyN2I5MmQyMjExMDMzNTI2ZWY5ZjIwNTBmMmNhNmZhYmEwN2YzYzQ4MzE2ZmY1YjI1ZTM1YTEwOWEzOGUyOGIwYTNiOGE4YzQ5NzIxYTc0MzQwZGUxNjA0ZDM4MDdkN2EzNDZmNzEzMWVkYTc0M2ZkMTFhNjJlMmY1MzI2YzBjYjEyZWVjMzAwMmRkOTE0NWZjMjVmMTU4Yzk1ZGQ0YzlkOGQ2MjA0ZWUwYWViMWNlMTYzNzNmZWRkMTVlYmRhYWNiMGQ=".getDecryptHandle())
         let handle = CXHandle(type: self.getHandleType(data.handleType), value: data.getEncryptHandle())
         let uuid = UUID(uuidString: data.uuid)
         let startCallAction = CXStartCallAction(call: uuid!, handle: handle)
