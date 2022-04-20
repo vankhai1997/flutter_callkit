@@ -4,6 +4,7 @@
 //
 //  Created by Hien Nguyen on 07/10/2021.
 //
+
 import Foundation
 import AVFoundation
 
@@ -127,7 +128,6 @@ public class Call: NSObject {
     @objc public var type: Int
     @objc public var duration: Int
     @objc public var extra: NSDictionary
-    @objc public var extraRecent: String
 
     //iOS
     @objc public var iconName: String
@@ -145,18 +145,17 @@ public class Call: NSObject {
     @objc public var audioSessionActive: Bool
     @objc public var audioSessionPreferredSampleRate: Double
     @objc public var audioSessionPreferredIOBufferDuration: Double
-    
-    @objc public init(id: String, nameCaller: String, handle: String, type: Int,extra: NSDictionary,extraRecent: String) {
+
+    @objc public init(id: String, nameCaller: String, handle: String, type: Int,extra:NSDictionary) {
         self.uuid = id
         self.nameCaller = nameCaller
-        self.appName = "Callkit"
+        self.appName = "Meey Team"
         self.handle = handle
         self.avatar = ""
         self.type = type
         self.duration = 30000
         self.extra = extra
-        self.extraRecent = extraRecent
-        self.iconName = "CallKitLogo"
+        self.iconName = "AppIcon"
         self.handleType = ""
         self.supportsVideo = true
         self.maximumCallGroups = 2
@@ -172,16 +171,17 @@ public class Call: NSObject {
         self.audioSessionPreferredSampleRate = 44100.0
         self.audioSessionPreferredIOBufferDuration = 0.005
     }
-    
+
     @objc public convenience init(args: NSDictionary) {
         var argsConvert = [String: Any?]()
-        for (value, key) in args {
+        for (key, value) in args {
             argsConvert[key as! String] = value
         }
         self.init(args: argsConvert)
     }
-    
+
     public init(args: [String: Any?]) {
+    print("initinitinitinit",args)
         self.uuid = args["id"] as? String ?? ""
         self.nameCaller = args["nameCaller"] as? String ?? ""
         self.appName = args["appName"] as? String ?? "Callkit"
@@ -189,10 +189,8 @@ public class Call: NSObject {
         self.avatar = args["avatar"] as? String ?? ""
         self.type = args["type"] as? Int ?? 0
         self.duration = args["duration"] as? Int ?? 30000
-        self.extraRecent = args["extraRecent"] as? String ?? ""
         self.extra = args["extra"] as? NSDictionary ?? [:]
-        
-        
+
         if let ios = args["ios"] as? [String: Any] {
             self.iconName = ios["iconName"] as? String ?? "CallKitLogo"
             self.handleType = ios["handleType"] as? String ?? ""
@@ -227,7 +225,7 @@ public class Call: NSObject {
             self.audioSessionPreferredIOBufferDuration = args["audioSessionPreferredIOBufferDuration"] as? Double ?? 0.005
         }
     }
-    
+
     func toJSON() -> [String: Any?] {
         let ios = [
             "iconName": iconName,
@@ -256,24 +254,22 @@ public class Call: NSObject {
             "type": type,
             "duration": duration,
             "extra": extra,
-            "extraRecent": extraRecent,
             "ios": ios
         ] as [String : Any?]
         return map
     }
 
+
     func getEncryptHandle() -> String {
+            let senderId = extra["senderId"] as? String ?? ""
+            let senderName = extra["senderName"] as? String ?? ""
+            let receiverId = extra["receiverId"] as? String ?? ""
+            let receiverName = extra["receiverName"] as? String ?? ""
+            let roomId = extra["roomId"] as? String ?? ""
+            let time = extra["time"] as? String ?? "0"
 
-            var anyDict = String()
-             for (value, key) in extra
-             {
-              anyDict += "\(value):\(key),"
-               }
-            print("======convert",anyDict)
-      return String(format: "{\"nameCaller\":\"%@\", \"handle\":\"%@\", \"extraRecent\":\"%@\"}", nameCaller, handle,anyDict).encryptHandle()
+        return String(format: "{\"nameCaller\":\"%@\", \"handle\":\"%@\", \"senderId\":\"%@\", \"senderName\":\"%@\", \"receiverId\":\"%@\", \"roomId\":\"%@\", \"time\":\"%@\", \"receiverName\":\"%@\",}", nameCaller,handle, senderId, senderName, receiverId, roomId, time, receiverName).encryptHandle()
     }
-
-
     
     
 }
