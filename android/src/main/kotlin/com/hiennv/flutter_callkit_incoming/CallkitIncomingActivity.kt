@@ -283,8 +283,8 @@ class CallkitIncomingActivity : Activity() {
         } else {
             val acceptIntent = CallkitIncomingBroadcastReceiver.getIntentAccept(this@CallkitIncomingActivity, data)
             sendBroadcast(acceptIntent)
-        }VERSION_CODES
-        if (Build.VERSION.SDK_INT >= Build..O) {
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val keyguardManager = getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
             keyguardManager.requestDismissKeyguard(this, null)
         }

@@ -3,6 +3,7 @@ package com.hiennv.flutter_callkit_incoming
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.os.Handler
 import android.os.Looper
 import androidx.annotation.NonNull
@@ -25,8 +26,8 @@ class FlutterCallkitIncomingPlugin : FlutterPlugin, MethodCallHandler, ActivityA
         @SuppressLint("StaticFieldLeak")
         private var instance: FlutterCallkitIncomingPlugin? = null
 
-        public fun getInstance(): FlutterCallkitIncomingPlugin  {
-            if(instance == null){
+        public fun getInstance(): FlutterCallkitIncomingPlugin {
+            if (instance == null) {
                 instance = FlutterCallkitIncomingPlugin()
             }
             return instance!!
@@ -38,16 +39,24 @@ class FlutterCallkitIncomingPlugin : FlutterPlugin, MethodCallHandler, ActivityA
             eventHandler.send(event, body)
         }
 
-        private fun sharePluginWithRegister(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding, @Nullable handler: MethodCallHandler) {
-            if(instance == null) {
+        private fun sharePluginWithRegister(
+            @NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding,
+            @Nullable handler: MethodCallHandler
+        ) {
+            if (instance == null) {
                 instance = FlutterCallkitIncomingPlugin()
             }
             instance!!.context = flutterPluginBinding.applicationContext
-            instance!!.callkitNotificationManager = CallkitNotificationManager(flutterPluginBinding.applicationContext)
-            instance!!.channel = MethodChannel(flutterPluginBinding.binaryMessenger, "flutter_callkit_incoming")
+            instance!!.callkitNotificationManager =
+                CallkitNotificationManager(flutterPluginBinding.applicationContext)
+            instance!!.channel =
+                MethodChannel(flutterPluginBinding.binaryMessenger, "flutter_callkit_incoming")
             instance!!.channel?.setMethodCallHandler(handler)
             instance!!.events =
-                EventChannel(flutterPluginBinding.binaryMessenger, "flutter_callkit_incoming_events")
+                EventChannel(
+                    flutterPluginBinding.binaryMessenger,
+                    "flutter_callkit_incoming_events"
+                )
             instance!!.events?.setStreamHandler(eventHandler)
         }
 
@@ -66,16 +75,18 @@ class FlutterCallkitIncomingPlugin : FlutterPlugin, MethodCallHandler, ActivityA
 
     override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         this.context = flutterPluginBinding.applicationContext
-        callkitNotificationManager = CallkitNotificationManager(flutterPluginBinding.applicationContext)
+        callkitNotificationManager =
+            CallkitNotificationManager(flutterPluginBinding.applicationContext)
         channel = MethodChannel(flutterPluginBinding.binaryMessenger, "flutter_callkit_incoming")
         channel?.setMethodCallHandler(this)
         events =
             EventChannel(flutterPluginBinding.binaryMessenger, "flutter_callkit_incoming_events")
         events?.setStreamHandler(eventHandler)
- //       sharePluginWithRegister(flutterPluginBinding, this)
+        //       sharePluginWithRegister(flutterPluginBinding, this)
     }
 
     public fun showIncomingNotification(data: Data) {
+        endAllCallsNoEvent()
         data.from = "notification"
         callkitNotificationManager?.showIncomingNotification(data.toBundle())
         //send BroadcastReceiver
@@ -114,6 +125,15 @@ class FlutterCallkitIncomingPlugin : FlutterPlugin, MethodCallHandler, ActivityA
                     it.toBundle()
                 )
             )
+        }
+        removeAllCalls(context)
+    }
+
+    public fun endAllCallsNoEvent() {
+        val calls = getDataActiveCalls(context)
+        calls.forEach {
+            context!!.stopService(Intent(context, CallkitSoundPlayerService::class.java))
+            callkitNotificationManager!!.clearIncomingNotification(it.toBundle())
         }
         removeAllCalls(context)
     }
