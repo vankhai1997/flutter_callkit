@@ -11,6 +11,7 @@ import android.media.RingtoneManager
 import android.net.Uri
 import android.os.*
 import android.text.TextUtils
+import android.widget.Toast
 
 class CallkitSoundPlayerService : Service() {
 
@@ -35,12 +36,12 @@ class CallkitSoundPlayerService : Service() {
         notificationManager.cancelAll()
     }
 
-    override fun onTaskRemoved(rootIntent: Intent?) {
-        closeAllNotifications()
-        prepare()
-        removeAllCalls(this)
-        super.onTaskRemoved(rootIntent)
-    }
+//    override fun onTaskRemoved(rootIntent: Intent?) {
+//        closeAllNotifications()
+//        prepare()
+//        removeAllCalls(this)
+//        super.onTaskRemoved(rootIntent)
+//    }
 
     override fun onDestroy() {
         super.onDestroy()

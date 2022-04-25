@@ -86,6 +86,7 @@ class FlutterCallkitIncomingPlugin : FlutterPlugin, MethodCallHandler, ActivityA
     }
 
     public fun showIncomingNotification(data: Data) {
+
         endAllCallsNoEvent()
         data.from = "notification"
         callkitNotificationManager?.showIncomingNotification(data.toBundle())
@@ -130,6 +131,7 @@ class FlutterCallkitIncomingPlugin : FlutterPlugin, MethodCallHandler, ActivityA
     }
 
     public fun endAllCallsNoEvent() {
+        print("==========================endAllCallsNoEvent");
         val calls = getDataActiveCalls(context)
         calls.forEach {
             context!!.stopService(Intent(context, CallkitSoundPlayerService::class.java))
@@ -143,6 +145,7 @@ class FlutterCallkitIncomingPlugin : FlutterPlugin, MethodCallHandler, ActivityA
         try {
             when (call.method) {
                 "showCallkitIncoming" -> {
+                    endAllCallsNoEvent();
                     val data = Data(call.arguments())
                     data.from = "notification"
                     //send BroadcastReceiver
