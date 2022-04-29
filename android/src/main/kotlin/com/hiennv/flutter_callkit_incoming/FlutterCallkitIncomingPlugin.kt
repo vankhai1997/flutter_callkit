@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Handler
 import android.os.Looper
+import android.widget.Toast
 import androidx.annotation.NonNull
 import androidx.annotation.Nullable
 
@@ -130,7 +131,7 @@ class FlutterCallkitIncomingPlugin : FlutterPlugin, MethodCallHandler, ActivityA
         removeAllCalls(context)
     }
 
-    public fun endAllCallsNoEvent() {
+    private fun endAllCallsNoEvent() {
         print("==========================endAllCallsNoEvent");
         val calls = getDataActiveCalls(context)
         calls.forEach {
@@ -174,6 +175,7 @@ class FlutterCallkitIncomingPlugin : FlutterPlugin, MethodCallHandler, ActivityA
                     result.success("OK")
                 }
                 "endCall" -> {
+
                     val data = Data(call.arguments())
                     context?.sendBroadcast(
                         CallkitIncomingBroadcastReceiver.getIntentEnded(
@@ -184,6 +186,7 @@ class FlutterCallkitIncomingPlugin : FlutterPlugin, MethodCallHandler, ActivityA
                     result.success("OK")
                 }
                 "endAllCalls" -> {
+
                     val calls = getDataActiveCalls(context)
                     calls.forEach {
                         context?.sendBroadcast(
@@ -211,7 +214,6 @@ class FlutterCallkitIncomingPlugin : FlutterPlugin, MethodCallHandler, ActivityA
     override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
         channel?.setMethodCallHandler(null)
     }
-
 
     override fun onAttachedToActivity(binding: ActivityPluginBinding) {
         this.activity = binding.activity
