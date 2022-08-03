@@ -128,7 +128,7 @@ public class Call: NSObject {
     @objc public var type: Int
     @objc public var duration: Int
     @objc public var extra: NSDictionary
-
+    
     //iOS
     @objc public var iconName: String
     @objc public var handleType: String
@@ -145,17 +145,17 @@ public class Call: NSObject {
     @objc public var audioSessionActive: Bool
     @objc public var audioSessionPreferredSampleRate: Double
     @objc public var audioSessionPreferredIOBufferDuration: Double
-
-    @objc public init(id: String, nameCaller: String, handle: String, type: Int,extra:NSDictionary) {
+    
+    @objc public init(id: String, nameCaller: String, handle: String, type: Int) {
         self.uuid = id
         self.nameCaller = nameCaller
-        self.appName = "Meey Team"
+        self.appName = "Callkit"
         self.handle = handle
         self.avatar = ""
         self.type = type
         self.duration = 30000
-        self.extra = extra
-        self.iconName = "AppIcon"
+        self.extra = [:]
+        self.iconName = "CallKitLogo"
         self.handleType = ""
         self.supportsVideo = true
         self.maximumCallGroups = 2
@@ -171,7 +171,7 @@ public class Call: NSObject {
         self.audioSessionPreferredSampleRate = 44100.0
         self.audioSessionPreferredIOBufferDuration = 0.005
     }
-
+    
     @objc public convenience init(args: NSDictionary) {
         var argsConvert = [String: Any?]()
         for (key, value) in args {
@@ -179,9 +179,8 @@ public class Call: NSObject {
         }
         self.init(args: argsConvert)
     }
-
+    
     public init(args: [String: Any?]) {
-    print("initinitinitinit",args)
         self.uuid = args["id"] as? String ?? ""
         self.nameCaller = args["nameCaller"] as? String ?? ""
         self.appName = args["appName"] as? String ?? "Callkit"
@@ -190,7 +189,8 @@ public class Call: NSObject {
         self.type = args["type"] as? Int ?? 0
         self.duration = args["duration"] as? Int ?? 30000
         self.extra = args["extra"] as? NSDictionary ?? [:]
-
+        
+        
         if let ios = args["ios"] as? [String: Any] {
             self.iconName = ios["iconName"] as? String ?? "CallKitLogo"
             self.handleType = ios["handleType"] as? String ?? ""
@@ -225,7 +225,7 @@ public class Call: NSObject {
             self.audioSessionPreferredIOBufferDuration = args["audioSessionPreferredIOBufferDuration"] as? Double ?? 0.005
         }
     }
-
+    
     func toJSON() -> [String: Any?] {
         let ios = [
             "iconName": iconName,
@@ -258,17 +258,9 @@ public class Call: NSObject {
         ] as [String : Any?]
         return map
     }
-
-
+    
     func getEncryptHandle() -> String {
-            let senderId = extra["senderId"] as? String ?? ""
-            let senderName = extra["senderName"] as? String ?? ""
-            let receiverId = extra["receiverId"] as? String ?? ""
-            let receiverName = extra["receiverName"] as? String ?? ""
-            let roomId = extra["roomId"] as? String ?? ""
-            let time = extra["time"] as? String ?? "0"
-
-        return String(format: "{\"nameCaller\":\"%@\", \"handle\":\"%@\", \"senderId\":\"%@\", \"senderName\":\"%@\", \"receiverId\":\"%@\", \"roomId\":\"%@\", \"time\":\"%@\", \"receiverName\":\"%@\",}", nameCaller,handle, senderId, senderName, receiverId, roomId, time, receiverName).encryptHandle()
+        return String(format: "{\"nameCaller\":\"%@\", \"handle\":\"%@\"}", nameCaller, handle).encryptHandle()
     }
     
     

@@ -1,21 +1,21 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.hiennv.flutter_callkit_incoming">
 
-    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT"/>
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
 
     <application>
+
         <activity
             android:name="com.hiennv.flutter_callkit_incoming.CallkitIncomingActivity"
             android:excludeFromRecents="true"
-            android:exported="true"
-            android:launchMode="singleTask"
             android:screenOrientation="portrait"
-
             android:showOnLockScreen="true"
+            android:launchMode="singleTask"
+            android:exported="true"
             android:theme="@style/CallkitIncomingTheme">
             <intent-filter>
                 <action android:name="com.hiennv.flutter_callkit_incoming.ACTION_CALL_INCOMING" />
@@ -23,9 +23,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.hiennv.flutter_callkit_incoming.TransparentActivity"
             android:exported="false"
-            android:theme="@style/TranslucentTheme" />
+            android:theme="@style/TranslucentTheme"
+            android:name="com.hiennv.flutter_callkit_incoming.TransparentActivity"/>
 
         <receiver
             android:name="com.hiennv.flutter_callkit_incoming.CallkitIncomingBroadcastReceiver"
@@ -41,9 +41,9 @@
         </receiver>
 
         <service
-            android:name="com.hiennv.flutter_callkit_incoming.CallkitSoundPlayerService"
             android:enabled="true"
-            android:exported="true" />
+            android:exported="true"
+            android:name="com.hiennv.flutter_callkit_incoming.CallkitSoundPlayerService"/>
 
     </application>
 </manifest>
