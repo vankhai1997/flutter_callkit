@@ -146,31 +146,32 @@ public class Call: NSObject {
     @objc public var audioSessionPreferredSampleRate: Double
     @objc public var audioSessionPreferredIOBufferDuration: Double
     
-    @objc public init(id: String, nameCaller: String, handle: String, type: Int) {
-        self.uuid = id
-        self.nameCaller = nameCaller
-        self.appName = "Callkit"
-        self.handle = handle
-        self.avatar = ""
-        self.type = type
-        self.duration = 30000
-        self.extra = [:]
-        self.iconName = "CallKitLogo"
-        self.handleType = ""
-        self.supportsVideo = true
-        self.maximumCallGroups = 2
-        self.maximumCallsPerCallGroup = 1
-        self.supportsDTMF = true
-        self.supportsHolding = true
-        self.supportsGrouping = true
-        self.supportsUngrouping = true
-        self.includesCallsInRecents = true
-        self.ringtonePath = ""
-        self.audioSessionMode = ""
-        self.audioSessionActive = true
-        self.audioSessionPreferredSampleRate = 44100.0
-        self.audioSessionPreferredIOBufferDuration = 0.005
-    }
+    @objc public init(id: String, nameCaller: String, handle: String, type: Int,extra:NSDictionary) {
+           self.uuid = id
+           self.nameCaller = nameCaller
+           self.appName = "Meey Team"
+           self.handle = handle
+           self.avatar = ""
+           self.type = type
+           self.duration = 30000
+           self.extra = extra
+           self.iconName = "AppIcon"
+           self.handleType = ""
+           self.supportsVideo = true
+           self.maximumCallGroups = 2
+           self.maximumCallsPerCallGroup = 1
+           self.supportsDTMF = true
+           self.supportsHolding = true
+           self.supportsGrouping = true
+           self.supportsUngrouping = true
+           self.includesCallsInRecents = true
+           self.ringtonePath = ""
+           self.audioSessionMode = ""
+           self.audioSessionActive = true
+           self.audioSessionPreferredSampleRate = 44100.0
+           self.audioSessionPreferredIOBufferDuration = 0.005
+       }
+
     
     @objc public convenience init(args: NSDictionary) {
         var argsConvert = [String: Any?]()
@@ -259,9 +260,17 @@ public class Call: NSObject {
         return map
     }
     
-    func getEncryptHandle() -> String {
-        return String(format: "{\"nameCaller\":\"%@\", \"handle\":\"%@\"}", nameCaller, handle).encryptHandle()
-    }
+  func getEncryptHandle() -> String {
+              let senderId = extra["senderId"] as? String ?? ""
+              let senderName = extra["senderName"] as? String ?? ""
+              let receiverId = extra["receiverId"] as? String ?? ""
+              let receiverName = extra["receiverName"] as? String ?? ""
+              let roomId = extra["roomId"] as? String ?? ""
+              let time = extra["time"] as? String ?? "0"
+
+          return String(format: "{\"nameCaller\":\"%@\", \"handle\":\"%@\", \"senderId\":\"%@\", \"senderName\":\"%@\", \"receiverId\":\"%@\", \"roomId\":\"%@\", \"time\":\"%@\", \"receiverName\":\"%@\",}", nameCaller,handle, senderId, senderName, receiverId, roomId, time, receiverName).encryptHandle()
+      }
+
     
     
 }
