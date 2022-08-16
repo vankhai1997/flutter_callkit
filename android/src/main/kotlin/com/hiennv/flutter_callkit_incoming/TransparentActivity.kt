@@ -28,6 +28,15 @@ class TransparentActivity : Activity() {
             return intent
         }
 
+        fun getIntentOpenCurrentConversation(context: Context, data: Bundle?): Intent {
+            val intent = Intent(context, TransparentActivity::class.java)
+            intent.putExtra("data", data)
+            intent.putExtra("type", "CURRENT_CONVERSATION")
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
+            return intent
+        }
+
     }
 
 
@@ -41,17 +50,31 @@ class TransparentActivity : Activity() {
         when (intent.getStringExtra("type")) {
             "ACCEPT" -> {
                 val data = intent.getBundleExtra("data")
-                val acceptIntent = CallkitIncomingBroadcastReceiver.getIntentAccept(this@TransparentActivity, data)
+                val acceptIntent =
+                    CallkitIncomingBroadcastReceiver.getIntentAccept(this@TransparentActivity, data)
                 sendBroadcast(acceptIntent)
             }
             "CALLBACK" -> {
                 val data = intent.getBundleExtra("data")
-                val acceptIntent = CallkitIncomingBroadcastReceiver.getIntentCallback(this@TransparentActivity, data)
+                val acceptIntent = CallkitIncomingBroadcastReceiver.getIntentCallback(
+                    this@TransparentActivity,
+                    data
+                )
+                sendBroadcast(acceptIntent)
+            }
+            "CURRENT_CONVERSATION" -> {
+                val data = intent.getBundleExtra("data")
+                val acceptIntent =
+                    CallkitIncomingBroadcastReceiver.getIntentOpenCurrentConversation(
+                        this@TransparentActivity,
+                        data
+                    )
                 sendBroadcast(acceptIntent)
             }
             else -> { // Note the block
                 val data = intent.getBundleExtra("data")
-                val acceptIntent = CallkitIncomingBroadcastReceiver.getIntentAccept(this@TransparentActivity, data)
+                val acceptIntent =
+                    CallkitIncomingBroadcastReceiver.getIntentAccept(this@TransparentActivity, data)
                 sendBroadcast(acceptIntent)
             }
         }
