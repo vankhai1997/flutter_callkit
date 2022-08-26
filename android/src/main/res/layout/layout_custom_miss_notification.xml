@@ -5,6 +5,7 @@
     android:orientation="vertical">
 
     <RelativeLayout
+        android:id="@+id/custom_miss_notification"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -42,37 +43,38 @@
             android:visibility="invisible" />
     </RelativeLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/base_margin"
-        android:orientation="horizontal">
+<!--    <LinearLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="@dimen/base_margin_x1_5"-->
+<!--        android:orientation="horizontal"-->
+<!--        android:visibility="gone">-->
 
 
-        <LinearLayout
-            android:id="@+id/llCallback"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/rounded_button_accept"
-            android:clickable="true"
-            android:focusable="true"
-            android:gravity="center"
-            android:orientation="horizontal">
+<!--        <LinearLayout-->
+<!--            android:id="@+id/llCallback"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_weight="1"-->
+<!--            android:background="@drawable/rounded_button_accept"-->
+<!--            android:clickable="true"-->
+<!--            android:focusable="true"-->
+<!--            android:gravity="center"-->
+<!--            android:orientation="horizontal">-->
 
-            <TextView
-                android:id="@+id/tvCallback"
-                style="@style/Widget.Compat.NotificationActionText"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/base_margin_x4"
-                android:gravity="center"
-                android:text="@string/text_call_back"
-                android:textAllCaps="false"
-                android:textColor="@android:color/white" />
+<!--            <TextView-->
+<!--                android:id="@+id/tvCallback"-->
+<!--                style="@style/Widget.Compat.NotificationActionText"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="@dimen/base_margin_x4"-->
+<!--                android:gravity="center"-->
+<!--                android:text="@string/text_call_back"-->
+<!--                android:textAllCaps="false"-->
+<!--                android:textColor="@android:color/white" />-->
 
-        </LinearLayout>
+<!--        </LinearLayout>-->
 
-    </LinearLayout>
+<!--    </LinearLayout>-->
 
 
 </LinearLayout>

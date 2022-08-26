@@ -22,6 +22,7 @@ class FlutterCallkitIncoming {
   /// CallEvent.ACTION_CALL_ACCEPT - Accepted an incoming call
   /// CallEvent.ACTION_CALL_DECLINE - Declined an incoming call
   /// CallEvent.ACTION_CALL_ENDED - Ended an incoming/outgoing call
+  /// CallEvent.ACTION_CLICK_OPEN_CURRENT_CONVERSATION - click miss notification
   /// CallEvent.ACTION_CALL_TIMEOUT - Missed an incoming call
   /// CallEvent.ACTION_CALL_CALLBACK - only Android (click action `Call back` from missed call notification)
   /// CallEvent.ACTION_CALL_TOGGLE_HOLD - only iOS
@@ -30,6 +31,7 @@ class FlutterCallkitIncoming {
   /// CallEvent.ACTION_CALL_TOGGLE_GROUP - only iOS
   /// CallEvent.ACTION_CALL_TOGGLE_AUDIO_SESSION - only iOS
   /// CallEvent.DID_UPDATE_DEVICE_PUSH_TOKEN_VOIP - only iOS
+  /// CallEvent. - only iOS
   /// }
   static Stream<CallEvent?> get onEvent =>
       _eventChannel.receiveBroadcastStream().map(_receiveCallEvent);
@@ -118,7 +120,8 @@ class CallEvent {
       "com.hiennv.flutter_callkit_incoming.ACTION_CALL_TOGGLE_GROUP";
   static const String ACTION_CALL_TOGGLE_AUDIO_SESSION =
       "com.hiennv.flutter_callkit_incoming.ACTION_CALL_TOGGLE_AUDIO_SESSION";
-
+  static const String ACTION_CLICK_OPEN_CURRENT_CONVERSATION =
+      "com.hiennv.flutter_callkit_incoming.ACTION_CLICK_OPEN_CURRENT_CONVERSATION";
   String name;
   dynamic body;
 
