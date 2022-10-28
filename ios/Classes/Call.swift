@@ -267,8 +267,10 @@ public class Call: NSObject {
               let receiverName = extra["receiverName"] as? String ?? ""
               let roomId = extra["roomId"] as? String ?? ""
               let time = extra["time"] as? String ?? "0"
+              let callForm = extra["callForm"] as? String ?? "0"
+              let historyId = extra["historyId"] as? String ?? "0"
 
-          return String(format: "{\"nameCaller\":\"%@\", \"handle\":\"%@\", \"senderId\":\"%@\", \"senderName\":\"%@\", \"receiverId\":\"%@\", \"roomId\":\"%@\", \"time\":\"%@\", \"receiverName\":\"%@\",}", nameCaller,handle, senderId, senderName, receiverId, roomId, time, receiverName).encryptHandle()
+          return String(format: "{\"nameCaller\":\"%@\", \"handle\":\"%@\", \"senderId\":\"%@\", \"senderName\":\"%@\", \"receiverId\":\"%@\", \"roomId\":\"%@\", \"time\":\"%@\", \"receiverName\":\"%@\", \"callForm\":\"%@\", \"historyId\":\"%@\",}", nameCaller,handle, senderId, senderName, receiverId, roomId, time, receiverName, callForm, historyId).encryptHandle()
       }
 
     
