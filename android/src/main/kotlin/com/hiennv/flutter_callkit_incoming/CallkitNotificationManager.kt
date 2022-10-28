@@ -50,6 +50,7 @@ class CallkitNotificationManager(private val context: Context) {
     private lateinit var notificationBuilder: NotificationCompat.Builder
     private var notificationViews: RemoteViews? = null
     private var notificationId: Int = 9696
+    private var notificationTag: String = ""
 
     private var targetLoadAvatarDefault = object : Target {
         override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
@@ -79,7 +80,9 @@ class CallkitNotificationManager(private val context: Context) {
     fun showIncomingNotification(data: Bundle) {
         data.putLong(EXTRA_TIME_START_CALL, System.currentTimeMillis())
 
-        notificationId = data.getString(EXTRA_CALLKIT_ID, "callkit_incoming").hashCode()+1
+        notificationId = data.getString(EXTRA_CALLKIT_ID, "callkit_incoming").hashCode() + 1
+        notificationTag = data.getString(EXTRA_CALLKIT_ID, "callkit_incoming")
+        clearNotificationByTag(notificationTag)
         createNotificationChanel()
 
         notificationBuilder = NotificationCompat.Builder(context, "callkit_incoming_channel_id")
@@ -196,6 +199,7 @@ class CallkitNotificationManager(private val context: Context) {
     fun showMissCallNotification(data: Bundle) {
         notificationId = data.getString(EXTRA_CALLKIT_ID, "callkit_incoming").hashCode() + 1
         Log.d("=====", "========$notificationId");
+        clearNotificationByTag(notificationTag)
 
         createNotificationChanel()
         val missedCallSound: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
@@ -318,14 +322,17 @@ class CallkitNotificationManager(private val context: Context) {
 
     fun clearIncomingNotification(data: Bundle) {
         context.sendBroadcast(CallkitIncomingActivity.getIntentEnded())
-        notificationId = data.getString(EXTRA_CALLKIT_ID, "callkit_incoming").hashCode()+1
+        notificationId = data.getString(EXTRA_CALLKIT_ID, "callkit_incoming").hashCode() + 1
         getNotificationManager().cancel(notificationId)
     }
 
-    fun clearMissCallNotification(data: Bundle) {
-        notificationId = data.getString(EXTRA_CALLKIT_ID, "callkit_incoming").hashCode()+1
-        Log.d("=====", "========id$notificationId");
+    fun clearNotificationByTag(tag: String) {
+        getNotificationManager().cancel(tag, 0);
+    }
 
+    fun clearMissCallNotification(data: Bundle) {
+        notificationId = data.getString(EXTRA_CALLKIT_ID, "callkit_incoming").hashCode() + 1
+        Log.d("=====", "========id$notificationId");
         getNotificationManager().cancel(notificationId)
         Handler(Looper.getMainLooper()).postDelayed({
             try {
