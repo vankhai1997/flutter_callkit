@@ -42,11 +42,14 @@ class CallManager: NSObject {
     }
     
     func endCall(call: Call) {
-        let endCallAction = CXEndCallAction(call: call.uuid)
-        let callTransaction = CXTransaction()
-        callTransaction.addAction(endCallAction)
-        //requestCall
-        self.requestCall(callTransaction, action: "endCall")
+      let callItem = self.callWithUUID(uuid: call.uuid)
+      if callItem  != nil {
+      let endCallAction = CXEndCallAction(call: call.uuid)
+      let callTransaction = CXTransaction()
+      callTransaction.addAction(endCallAction)
+      //requestCall
+      self.requestCall(callTransaction, action: "endCall")
+      }
     }
     
     func endCallAlls() {
