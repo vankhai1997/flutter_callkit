@@ -179,10 +179,14 @@ public class SwiftFlutterCallkitIncomingPlugin: NSObject, FlutterPlugin, CXProvi
             call = Call(uuid: UUID(uuidString: self.data!.uuid)!, data: data)
             self.isFromPushKit = false
             self.sendEvent(SwiftFlutterCallkitIncomingPlugin.ACTION_CALL_ENDED, data.toJSON())
+            self.callManager?.endCall(call: call!)
         }else {
+        if data.uuid != nil {
             call = Call(uuid: UUID(uuidString: data.uuid)!, data: data)
+            self.callManager?.endCall(call: call!)
         }
-        self.callManager?.endCall(call: call!)
+        }
+
     }
     
     @objc public func activeCalls() -> [[String: Any]]? {
